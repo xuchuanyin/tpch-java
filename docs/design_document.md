@@ -39,6 +39,8 @@ This is a customize procedure just like the 'Create Table' procedure.
 
 We will handle this procedure just like the 'Create Table' procedure.
 
+Note that we may need some preparation or postparation for this, such as uploading data to HDFS.
+
 ## Query
 
 This is a common procedure.
