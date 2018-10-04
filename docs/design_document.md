@@ -10,11 +10,50 @@ This is a common procedure.
 User provide the wanted table name, data size, file number, size per file,
 then we can automatically generate corresponding CSV file to specified directories.
 
-In this part, we will reuse the airlift-tpch version to generate the source file.
+User can specify those information in a `DataGenerateModel`.
+A `DataGenerateModel` is mapped to a directory.
+In this directory, there is a file called 'data_generate_model.json'.
+The conent looks like below:
+```json
+{
+  "targetDirectory": "data_gen_target_path",
+  "tableGenModels": [
+    {
+      "tpchTableName": "customer",
+      "scaleupFactor": 1,
+      "filePartCnt": 2
+    },
+    {
+      "tpchTableName": "lineitem",
+      "scaleupFactor": 1,
+      "filePartCnt": 3
+    }
+  ]
+}
+```
+And the output looks like below:
+```shell
+[~/01_workspace/tpch-java]$ ls -lh data_gen_target_path/*
+data_gen_target_path/customer:
+total 47560
+-rw-r--r--  1 user  staff    12M Oct  4 12:27 customer-part-1.dat
+-rw-r--r--  1 user  staff    12M Oct  4 12:27 customer-part-2.dat
+
+data_gen_target_path/lineitem:
+total 1484128
+-rw-r--r--  1 user  staff   241M Oct  4 12:27 lineitem-part-1.dat
+-rw-r--r--  1 user  staff   242M Oct  4 12:28 lineitem-part-2.dat
+-rw-r--r--  1 user  staff   242M Oct  4 12:28 lineitem-part-3.dat
+```
+
+You can refer to `DataGeneratorTest.java` as an example.
+
+While implementing for this part, we will reuse the airlift-tpch version to generate the source file.
 
 ## Create Table
 
-This is a customize procedure cause each DataBase/OLAP system may have different grammar to create the table.
+This is a customize procedure cause each DataBase/OLAP system may have
+different grammar to create the table.
 
 ### Way 1
 
