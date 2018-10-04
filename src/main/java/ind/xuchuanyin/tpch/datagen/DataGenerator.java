@@ -30,8 +30,9 @@ public class DataGenerator {
     Gson gson = new Gson();
     Reader reader = null;
     try {
-      reader = new FileReader(dataGenMetaPath);
+      reader = new FileReader(dataGenMetaPath + File.separator + DataGenModel.JSON_FILE);
       dataGenModel = gson.fromJson(reader, DataGenModel.class);
+      LOGGER.info("Load data generator model: " + dataGenModel);
     } catch (IOException e) {
       LOGGER.error("Failed to load model for data generator from path " + dataGenMetaPath, e);
       throw e;
@@ -43,9 +44,10 @@ public class DataGenerator {
   }
 
   private void generate() {
-    for (DataGenModel.TableGenModel tableGenModel : dataGenModel.getTableGenModels()) {
+    LOGGER.info("Start to generate data for " + dataGenModel.getTableGenModels().size() + " tables");
+    for (TableGenModel tableGenModel : dataGenModel.getTableGenModels()) {
       try {
-        generateData4PerTable(tableGenModel);
+        generateData4Table(tableGenModel);
       } catch (IOException e) {
         LOGGER.error("Failed to generate data for table: " + tableGenModel.getTpchTableName(), e);
         try {
@@ -55,20 +57,22 @@ public class DataGenerator {
         }
       }
     }
+    LOGGER.info("Succeed to generate data for " + dataGenModel.getTableGenModels().size() + " tables");
   }
 
-  private void generateData4PerTable(DataGenModel.TableGenModel tableGenModel) throws IOException {
+  private void generateData4Table(TableGenModel tableGenModel) throws IOException {
     String tpchTableName = tableGenModel.getTpchTableName();
     int partCnt = tableGenModel.getFilePartCnt();
-    int scalupBase = AirliftTpchUtil.getInstance().getScaleupFactor(tpchTableName);
-    int scalupFactor = (int) tableGenModel.getTotalRowCnt() / scalupBase;
+    int scaleupFactor = tableGenModel.getScaleupFactor();
 
     FileUtils.forceMkdir(
         FileUtils.getFile(dataGenModel.getTargetDirectory() + File.separator + tpchTableName));
+    LOGGER.info("Start to generate data for table " + tpchTableName);
     for (int part = 1; part <= partCnt; part++) {
       AirliftTpchUtil.getInstance().generateData4PerPart(
-          dataGenModel.getTargetDirectory(), tpchTableName, scalupFactor, part, partCnt);
+          dataGenModel.getTargetDirectory(), tpchTableName, scaleupFactor, part, partCnt);
     }
+    LOGGER.info("Succeed to generate data for table " + tpchTableName);
   }
 
   private void clearData(String tpchTableName) throws IOException {
