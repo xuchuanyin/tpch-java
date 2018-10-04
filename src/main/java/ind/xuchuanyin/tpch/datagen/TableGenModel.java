@@ -2,6 +2,7 @@ package ind.xuchuanyin.tpch.datagen;
 
 import java.util.Collection;
 
+import ind.xuchuanyin.tpch.Normalizer;
 import io.airlift.tpch.TpchTable;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.collections4.Transformer;

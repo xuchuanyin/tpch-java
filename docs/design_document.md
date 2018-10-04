@@ -58,9 +58,7 @@ different grammar to create the table.
 ### Way 1
 
 For general usage, we will let the user provide the SQL statements for creating table.
-We call this a `TableModel`.
-A `TableModel` is mapped to a directory.
-In this directory, there is a file called 'create_table_sqls.txt', each line represents a statement.
+The statements are in a plain text file in which each line represents a statement.
 
 We will read the file and create the tables.
 

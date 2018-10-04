@@ -1,4 +1,4 @@
-package ind.xuchuanyin.tpch.datagen;
+package ind.xuchuanyin.tpch;
 
 public interface Normalizer {
   public void normalize() throws IllegalArgumentException;

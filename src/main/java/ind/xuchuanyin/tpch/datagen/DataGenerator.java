@@ -83,6 +83,4 @@ public class DataGenerator {
   private String summary() {
     return "not implemented yet";
   }
-
-
 }

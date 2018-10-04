@@ -2,6 +2,7 @@ package ind.xuchuanyin.tpch.datagen;
 
 import java.util.List;
 
+import ind.xuchuanyin.tpch.Normalizer;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
