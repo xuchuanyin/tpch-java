@@ -5,7 +5,7 @@ import java.util.UUID;
 public class QuerySlice {
   private String id = UUID.randomUUID().toString();
   private String sql;
-  private String type = "unclassfied";
+  private String type = "unclassified";
   private int threads = 1;
   private boolean isConsumeResult = true;
   private boolean isCountInStatistics = true;
