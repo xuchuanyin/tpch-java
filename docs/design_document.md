@@ -82,13 +82,13 @@ Note that we may need some preparation or postparation for this, such as uploadi
 
 This is a common procedure.
 
-User can provide the `QueryModel` for this.
-A `QueryModel` is mapped to a directory.
+User can provide the `QuerySlice` for this.
+A `QuerySlice` is mapped to a directory.
 In this directory, there is a file called 'query_sqls.json', each block represents a query.
 The block describes the SQL to be executed, number of iteration for warm-up and execution.
 There is also a file called 'driver.properties', which describes the driver url and other configurations.
 
-For each `QueryModel`, we'll get a statistics. And we write that into a json file called 'statistics.json'.
+For each `QuerySlice`, we'll get a statistics. And we write that into a json file called 'statistics.json'.
 We also provide corresponding runlog under that directory.
 
 Note that we may need to deal with the NA results.
