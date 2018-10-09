@@ -5,11 +5,8 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public final class MyHistogram<T> {
-  private static final String VERTICAL = "|";
-  private static final String PLUS = "+";
   private int size;
   private T total;
   private T min;
@@ -62,33 +59,10 @@ public final class MyHistogram<T> {
     value.add(String.valueOf(this.ninety));
     value.add(String.valueOf(this.ninety_five));
 
-    int titleMaxWidth = 5;
-    int valueMaxWidth = value.stream().map(v -> v.length()).max(new Comparator<Integer>() {
-      @Override public int compare(Integer o1, Integer o2) {
-        return o1.compareTo(o2);
-      }
-    }).get();
-
-    int maxWidth = titleMaxWidth >= valueMaxWidth ? titleMaxWidth : valueMaxWidth;
-    maxWidth = maxWidth + 2;
-
-    List<String> sep = new ArrayList<>(value.size());
-    for (int i = 0; i < value.size(); i++) {
-      sep.add(genChars("-", maxWidth));
-    }
-
-    String titleLine = StringUtils.join(padStr(title, maxWidth), VERTICAL);
-    String valueLine = StringUtils.join(padStr(value, maxWidth), VERTICAL);
-    String sepLine = StringUtils.join(sep, PLUS);
-
-    final StringBuffer sb = new StringBuffer();
-    sb.append(header).append(System.lineSeparator()).append(VERTICAL).append(sepLine)
-        .append(VERTICAL).append(System.lineSeparator()).append(VERTICAL).append(titleLine)
-        .append(VERTICAL).append(System.lineSeparator()).append(VERTICAL).append(sepLine)
-        .append(VERTICAL).append(System.lineSeparator()).append(VERTICAL).append(valueLine)
-        .append(VERTICAL).append(System.lineSeparator()).append(VERTICAL).append(sepLine)
-        .append(VERTICAL).append(System.lineSeparator());
-    return sb.toString();
+    TableFormatter tableFormatter = new TableFormatter(true);
+    tableFormatter.setTitle(title);
+    tableFormatter.addRow(value.toArray(new String[0]));
+    return header + System.lineSeparator() + tableFormatter.toPrettyString();
   }
 
   public String toCompactString(String header) {
@@ -104,27 +78,6 @@ public final class MyHistogram<T> {
     value.add(String.valueOf(this.ninety));
     value.add(String.valueOf(this.ninety_five));
     return header + ":" + StringUtils.join(value, ",");
-  }
-
-  private List<String> padStr(List<String> input, int width) {
-    return input.stream().map(s -> {
-      int leftPad = (width - s.length()) / 2;
-      int rightPad = width - leftPad - s.length();
-
-      return genChars(" ", leftPad) + s + genChars(" ", rightPad);
-    }).collect(Collectors.toList());
-  }
-
-  private String genChars(String ch, int num) {
-    if (num <= 0) {
-      return "";
-    }
-
-    StringBuffer sb = new StringBuffer();
-    for (int i = 0; i < num; i++) {
-      sb.append(ch);
-    }
-    return sb.toString();
   }
 
   public static final class MyHistogramBuilder<T> {
