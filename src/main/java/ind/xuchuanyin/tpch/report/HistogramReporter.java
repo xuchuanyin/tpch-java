@@ -1,51 +1,77 @@
 package ind.xuchuanyin.tpch.report;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.google.gson.Gson;
 import ind.xuchuanyin.tpch.jdbc.QueryResult;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 public class HistogramReporter {
   private static final Logger LOGGER = Logger.getLogger(HistogramReporter.class);
+  public static final String JSON_RPT_SUFFIX = "_rpt.json";
+  public static final String TBL_RPT_SUFFIX = "_rpt.txt";
 
-  public static String statistic(List<QueryResult> results, boolean isPrettyOut) {
-    Map<String, MyHistogram> histogramMap = new HashMap<>();
+  public static String statistic(List<QueryResult> results, String reportStore) {
+    List<QueryHistogram> histograms = new ArrayList<>();
 
-    Set<String> queryTypes = results.stream()
-        .map(r -> r.getQuerySlice().getType())
-        .collect(Collectors.toSet());
+    Set<String> queryTypes =
+        results.stream().map(r -> r.getQuerySlice().getType()).collect(Collectors.toSet());
     queryTypes.add("ALL");
     // for each type of query, get the query statistic
     for (String type : queryTypes) {
       List<Long> durations = results.stream()
           .filter(r -> type.equals("ALL") || r.getQuerySlice().getType().equals(type))
-          .map(QueryResult::getDuration)
-          .collect(Collectors.toList());
-      MyHistogram histogram = MyHistogram.statisticList(type, durations);
-      histogramMap.put(type, histogram);
+          .map(QueryResult::getDuration).collect(Collectors.toList());
+      QueryHistogram histogram = QueryHistogram.statisticList(type, durations);
+      histograms.add(histogram);
     }
 
-    List<Map.Entry<String, MyHistogram>> listed = new ArrayList<>(histogramMap.entrySet());
-    listed.sort(new Comparator<Map.Entry<String, MyHistogram>>() {
+    histograms.sort(new Comparator<QueryHistogram>() {
       @Override
-      public int compare(Map.Entry<String, MyHistogram> o1, Map.Entry<String, MyHistogram> o2) {
-        return o1.getKey().compareToIgnoreCase(o2.getKey());
+      public int compare(QueryHistogram o1, QueryHistogram o2) {
+        return o1.getQuery().compareToIgnoreCase(o2.getQuery());
       }
     });
 
     TableFormatter tableFormatter = new TableFormatter(true);
-    tableFormatter.setTitle(MyHistogram.getTitle());
+    tableFormatter.setTitle(QueryHistogram.getTitle());
 
-    for (Map.Entry<String, MyHistogram> entry : listed) {
-      tableFormatter.addRow(entry.getValue().getRawValue());
+    for (QueryHistogram histogram : histograms) {
+      tableFormatter.addRow(histogram.getRawValue());
     }
 
-    return tableFormatter.toPrettyString();
+    String prettyStr = tableFormatter.toPrettyString();
+
+    if (StringUtils.isNotBlank(reportStore)) {
+      try {
+        // generate json / pretty table format report for these histograms
+        FileUtils.forceMkdir(FileUtils.getFile(reportStore));
+        long ts = System.nanoTime();
+        File jsonFile = FileUtils.getFile(reportStore + File.separator + ts + JSON_RPT_SUFFIX);
+        File tableFile = FileUtils.getFile(reportStore + File.separator + ts + TBL_RPT_SUFFIX);
+        FileUtils.deleteQuietly(jsonFile);
+        FileUtils.deleteQuietly(tableFile);
+        FileUtils.touch(jsonFile);
+        FileUtils.touch(tableFile);
+        Gson gson = new Gson();
+        String histogramStr = gson.toJson(histograms);
+        FileUtils.write(jsonFile, histogramStr, "utf-8");
+        FileUtils.write(tableFile, prettyStr, "utf-8");
+        LOGGER.info(String.format("Test reports are generated in path %s and %s",
+            jsonFile.getAbsolutePath(), tableFile.getAbsolutePath()));
+      } catch (IOException e) {
+        LOGGER.error("Failed to write report to file", e);
+      }
+    }
+
+    return prettyStr;
   }
 }

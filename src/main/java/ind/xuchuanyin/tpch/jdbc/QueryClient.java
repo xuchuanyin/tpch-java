@@ -61,7 +61,7 @@ public class QueryClient {
       end2EndDuration.add(System.currentTimeMillis() - start);
 
       // do statistics for each iteration
-      outputList.add(HistogramReporter.statistic(cycleResult, queryModel.isPrettyRpt()));
+      outputList.add(HistogramReporter.statistic(cycleResult, queryModel.getReportStore()));
       allResults.addAll(cycleResult);
 
       if (iteration > 0 && queryModel.getExecInterval() > 0) {
@@ -73,7 +73,7 @@ public class QueryClient {
 
     if (queryModel.getExecIteration() > 1) {
       // statistic over all iterations
-      outputList.add(HistogramReporter.statistic(allResults, queryModel.isPrettyRpt()));
+      outputList.add(HistogramReporter.statistic(allResults, queryModel.getReportStore()));
     }
 
     LOGGER.info("Query statistics(ms): " + System.lineSeparator() + StringUtils

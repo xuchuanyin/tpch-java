@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public final class MyHistogram<T> {
+public final class QueryHistogram<T> {
   private static final List<String> HISTOGRAM_TITLE = new ArrayList<String>() {{
     add("query");
     add("size");
@@ -31,7 +31,7 @@ public final class MyHistogram<T> {
   private T ninety_five;
 
   @Override public String toString() {
-    final StringBuffer sb = new StringBuffer("MyHistogram{");
+    final StringBuffer sb = new StringBuffer("QueryHistogram{");
     sb.append("query='").append(query).append("'");
     sb.append("size=").append(size);
     sb.append(", total=").append(total);
@@ -51,6 +51,10 @@ public final class MyHistogram<T> {
     return HISTOGRAM_TITLE;
   }
 
+  public String getQuery() {
+    return query;
+  }
+
   public List<String> getRawValue() {
     List<String> value = new ArrayList<>(10);
     value.add(String.valueOf(this.query));
@@ -67,7 +71,8 @@ public final class MyHistogram<T> {
 
     return value;
   }
-  public static final class MyHistogramBuilder<T> {
+
+  public static final class QueryHistogramBuilder<T> {
     private String query;
     private int size;
     private T total;
@@ -80,86 +85,86 @@ public final class MyHistogram<T> {
     private T ninety;
     private T ninety_five;
 
-    private MyHistogramBuilder() {
+    private QueryHistogramBuilder() {
     }
 
-    public static MyHistogramBuilder createBuilder() {
-      return new MyHistogramBuilder();
+    public static QueryHistogramBuilder createBuilder() {
+      return new QueryHistogramBuilder();
     }
 
-    public MyHistogramBuilder withQuery(String query) {
+    public QueryHistogramBuilder withQuery(String query) {
       this.query = query;
       return this;
     }
 
-    public MyHistogramBuilder withSize(int size) {
+    public QueryHistogramBuilder withSize(int size) {
       this.size = size;
       return this;
     }
 
-    public MyHistogramBuilder withTotal(T total) {
+    public QueryHistogramBuilder withTotal(T total) {
       this.total = total;
       return this;
     }
 
-    public MyHistogramBuilder withMin(T min) {
+    public QueryHistogramBuilder withMin(T min) {
       this.min = min;
       return this;
     }
 
-    public MyHistogramBuilder withMax(T max) {
+    public QueryHistogramBuilder withMax(T max) {
       this.max = max;
       return this;
     }
 
-    public MyHistogramBuilder withAvg(double avg) {
+    public QueryHistogramBuilder withAvg(double avg) {
       this.avg = avg;
       return this;
     }
 
-    public MyHistogramBuilder withQuarter(T quarter) {
+    public QueryHistogramBuilder withQuarter(T quarter) {
       this.quarter = quarter;
       return this;
     }
 
-    public MyHistogramBuilder withHalf(T half) {
+    public QueryHistogramBuilder withHalf(T half) {
       this.half = half;
       return this;
     }
 
-    public MyHistogramBuilder withThree_quarters(T three_quarters) {
+    public QueryHistogramBuilder withThree_quarters(T three_quarters) {
       this.three_quarters = three_quarters;
       return this;
     }
 
-    public MyHistogramBuilder withNinety(T ninety) {
+    public QueryHistogramBuilder withNinety(T ninety) {
       this.ninety = ninety;
       return this;
     }
 
-    public MyHistogramBuilder withNinety_five(T ninety_five) {
+    public QueryHistogramBuilder withNinety_five(T ninety_five) {
       this.ninety_five = ninety_five;
       return this;
     }
 
-    public MyHistogram build() {
-      MyHistogram myHistogram = new MyHistogram();
-      myHistogram.ninety = this.ninety;
-      myHistogram.half = this.half;
-      myHistogram.ninety_five = this.ninety_five;
-      myHistogram.max = this.max;
-      myHistogram.total = this.total;
-      myHistogram.min = this.min;
-      myHistogram.quarter = this.quarter;
-      myHistogram.three_quarters = this.three_quarters;
-      myHistogram.avg = this.avg;
-      myHistogram.size = this.size;
-      myHistogram.query = this.query;
-      return myHistogram;
+    public QueryHistogram build() {
+      QueryHistogram queryHistogram = new QueryHistogram();
+      queryHistogram.ninety = this.ninety;
+      queryHistogram.half = this.half;
+      queryHistogram.ninety_five = this.ninety_five;
+      queryHistogram.max = this.max;
+      queryHistogram.total = this.total;
+      queryHistogram.min = this.min;
+      queryHistogram.quarter = this.quarter;
+      queryHistogram.three_quarters = this.three_quarters;
+      queryHistogram.avg = this.avg;
+      queryHistogram.size = this.size;
+      queryHistogram.query = this.query;
+      return queryHistogram;
     }
   }
 
-  public static MyHistogram statisticList(String query, List<Long> list) {
+  public static QueryHistogram statisticList(String query, List<Long> list) {
     list.sort(new Comparator<Long>() {
       @Override public int compare(Long o1, Long o2) {
         return o1.compareTo(o2);
@@ -189,10 +194,10 @@ public final class MyHistogram<T> {
     //95%
     long ninety_five = list.get(size * 95 / 100);
 
-    MyHistogram.MyHistogramBuilder myHistogramBuilder =
-        MyHistogram.MyHistogramBuilder.createBuilder();
+    QueryHistogramBuilder queryHistogramBuilder =
+        QueryHistogramBuilder.createBuilder();
 
-    return myHistogramBuilder
+    return queryHistogramBuilder
         .withQuery(query)
         .withSize(size)
         .withTotal(total)

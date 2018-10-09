@@ -16,14 +16,15 @@ public class QueryModel {
   private int execInterval = 1;
   private int execConcurrentSize = 1;
   private boolean shuffleExecute = false;
-  private boolean prettyRpt = true;
+  private String reportStore;
 
   private List<QuerySlice> querySlices;
 
   public QueryModel() {
   }
 
-  @Override public String toString() {
+  @Override
+  public String toString() {
     final StringBuffer sb = new StringBuffer("QueryModel{");
     sb.append("jdbcUrl='").append(jdbcUrl).append('\'');
     sb.append(", jdbcUser='").append(jdbcUser).append('\'');
@@ -34,7 +35,7 @@ public class QueryModel {
     sb.append(", execInterval=").append(execInterval);
     sb.append(", execConcurrentSize=").append(execConcurrentSize);
     sb.append(", shuffleExecute=").append(shuffleExecute);
-    sb.append(", prettyRpt=").append(prettyRpt);
+    sb.append(", reportStore='").append(reportStore).append('\'');
     sb.append(", querySlices=").append(querySlices);
     sb.append('}');
     return sb.toString();
@@ -112,12 +113,12 @@ public class QueryModel {
     this.shuffleExecute = shuffleExecute;
   }
 
-  public boolean isPrettyRpt() {
-    return prettyRpt;
+  public String getReportStore() {
+    return reportStore;
   }
 
-  public void setPrettyRpt(boolean prettyRpt) {
-    this.prettyRpt = prettyRpt;
+  public void setReportStore(String reportStore) {
+    this.reportStore = reportStore;
   }
 
   public List<QuerySlice> getQuerySlices() {
@@ -139,7 +140,7 @@ public class QueryModel {
     private int execInterval = 1;
     private int execConcurrentSize = 1;
     private boolean shuffleExecute = false;
-    private boolean prettyRpt = true;
+    private String reportStore;
     private List<QuerySlice> querySlices;
 
     private QueryModelBuilder() {
@@ -194,8 +195,8 @@ public class QueryModel {
       return this;
     }
 
-    public QueryModelBuilder withPrettyRpt(boolean prettyRpt) {
-      this.prettyRpt = prettyRpt;
+    public QueryModelBuilder withReportStore(String reportStore) {
+      this.reportStore = reportStore;
       return this;
     }
 
@@ -215,7 +216,7 @@ public class QueryModel {
       queryModel.setExecInterval(execInterval);
       queryModel.setExecConcurrentSize(execConcurrentSize);
       queryModel.setShuffleExecute(shuffleExecute);
-      queryModel.setPrettyRpt(prettyRpt);
+      queryModel.setReportStore(reportStore);
       queryModel.setQuerySlices(querySlices);
       return queryModel;
     }

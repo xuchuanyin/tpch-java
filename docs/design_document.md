@@ -73,7 +73,7 @@ The content looks like below:
   "execInterval": 2,
   "execConcurrentSize": 2,
   "shuffleExecute": true,
-  "prettyRpt": true,
+  "reportStore": "report1",
   "querySlices": [
     {
       "id": "id1",
@@ -107,7 +107,7 @@ The content looks like below:
 | execInterval | 2 | Y | Time to wait in seconds before next iteration |
 | execConcurrentSize | 1 | Y | Pool size for concurrent querying |
 | shuffleExecute | false | Y | Whether to shuffle the sql statements before execution |
-| prettyRpt | true | Y | Whether to generate pretty statistics of the query model |
+| reportStore | - | Y | Where to store the statistic result of the query model. If this parameter is not configured, we will not store it. If it is configured, we will write the statistics to a file in both json and table format. Later user can merge different reports |
 | querySlices | - | N | Each `QuerySlice` represents a block of sql statments that to be executed |
 
 # parameters for `QuerySlice`
