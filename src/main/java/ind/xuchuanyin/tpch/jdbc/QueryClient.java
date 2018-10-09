@@ -18,7 +18,8 @@ import org.apache.log4j.Logger;
 
 public class QueryClient {
   private static final Logger LOGGER = Logger.getLogger(QueryClient.class);
-  private static QueryModel queryModel;
+  private QueryModel queryModel;
+  private QueryProcessor queryProcessor;
 
   public QueryClient(String queryModelMetaPath) throws Exception {
     File file = FileUtils.getFile(queryModelMetaPath);
@@ -27,6 +28,7 @@ public class QueryClient {
     ConnectionMgr.getInstance()
         .init(queryModel.getJdbcDriver(), queryModel.getJdbcUrl(), queryModel.getJdbcUser(),
             queryModel.getJdbcPwd(), queryModel.getJdbcPoolSize());
+    queryProcessor = new QueryProcessor(queryModel.getExecConcurrentSize());
   }
 
   private void loadQueryModel(File file) throws IOException {
@@ -49,12 +51,12 @@ public class QueryClient {
   public void ignite() throws Exception {
     int iteration = queryModel.getExecIteration();
     List<String> outputList = new ArrayList<>(iteration);
-    List<QueryProcessor.QueryResult> allResults = new ArrayList<>();
+    List<QueryResult> allResults = new ArrayList<>();
     List<Long> end2EndDuration = new ArrayList<>(iteration);
     while (iteration-- > 0) {
       long start = System.currentTimeMillis();
 
-      List<QueryProcessor.QueryResult> cycleResult = query(queryModel.getQuerySlices());
+      List<QueryResult> cycleResult = query(queryModel.getQuerySlices());
 
       end2EndDuration.add(System.currentTimeMillis() - start);
 
@@ -80,44 +82,42 @@ public class QueryClient {
     LOGGER.info("End2End time(ms): " + StringUtils.join(end2EndDuration, ","));
   }
 
-  private List<QueryProcessor.QueryResult> query(List<QuerySlice> querySlices)
+  private List<QueryResult> query(List<QuerySlice> querySlices)
       throws InterruptedException {
-    List<String> extraInfos = new ArrayList<>(querySlices.size());
-
-    List<QuerySlice> atomicQuerySlices = new ArrayList<>(querySlices.size() * 2);
+    List<QuerySlice> threadQuerySlices = new ArrayList<>(querySlices.size());
     for (QuerySlice querySlice : querySlices) {
       for (int i = 0; i < querySlice.getThreads(); i++) {
-        atomicQuerySlices.add(querySlice);
+        threadQuerySlices.add(querySlice);
       }
     }
 
     if (queryModel.isShuffleExecute()) {
-      List<String> originSeq = atomicQuerySlices.stream().map(m -> m.getType() + '-' + m.getId())
+      List<String> originSeq = threadQuerySlices.stream()
+          .map(QuerySlice::getId)
           .collect(Collectors.toList());
       // shuffle the queries
-      QuerySlice[] simpleQuerySliceArray = atomicQuerySlices.toArray(new QuerySlice[0]);
+      QuerySlice[] simpleQuerySliceArray = threadQuerySlices.toArray(new QuerySlice[0]);
       Utils.shuffleArray(simpleQuerySliceArray);
-      List<String> shuffledSeq =
-          Arrays.stream(simpleQuerySliceArray).map(m -> m.getType() + '-' + m.getId())
-              .collect(Collectors.toList());
-      LOGGER.info("OriginQuerySeq: " + StringUtils.join(originSeq, ","));
-      LOGGER.info("ShuffledQuerySeq: " + StringUtils.join(shuffledSeq, ","));
+      List<String> shuffledSeq = Arrays.stream(simpleQuerySliceArray)
+          .map(QuerySlice::getId)
+          .collect(Collectors.toList());
+      LOGGER.info("Original Query Sequence: " + StringUtils.join(originSeq, ","));
+      LOGGER.info("Shuffled Query Sequence: " + StringUtils.join(shuffledSeq, ","));
       querySlices = Arrays.asList(simpleQuerySliceArray);
     }
 
-    QueryProcessor queryProcessor = new QueryProcessor(queryModel.getExecConcurrentSize());
+    List<QueryResult> queryResults = queryProcessor.processBatch(querySlices);
 
-    List<QueryProcessor.QueryResult> queryResults =
-        queryProcessor.processBatch(querySlices, extraInfos, queryModel.getExecInterval());
-
-    List<Long> timeSeq =
-        queryResults.stream().map(r -> r.getDuration()).collect(Collectors.toList());
-    LOGGER.info("TimeTakenSeq: " + StringUtils.join(timeSeq, ","));
+    List<Long> timeSeq = queryResults.stream()
+        .map(QueryResult::getDuration)
+        .collect(Collectors.toList());
+    LOGGER.info("Time Taken Sequence(ms): " + StringUtils.join(timeSeq, ","));
 
     return queryResults;
   }
 
   public void close() {
     ConnectionMgr.getInstance().destroy();
+    queryProcessor.close();
   }
 }
