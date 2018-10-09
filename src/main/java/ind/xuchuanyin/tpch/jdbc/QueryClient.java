@@ -20,6 +20,7 @@ public class QueryClient {
   private static final Logger LOGGER = Logger.getLogger(QueryClient.class);
   private QueryModel queryModel;
   private QueryProcessor queryProcessor;
+  private int totalResultCnt;
 
   public QueryClient(String queryModelMetaPath) throws Exception {
     File file = FileUtils.getFile(queryModelMetaPath);
@@ -51,20 +52,26 @@ public class QueryClient {
   public void ignite() throws Exception {
     int iteration = queryModel.getExecIteration();
     List<String> outputList = new ArrayList<>(iteration);
-    List<QueryResult> allResults = new ArrayList<>();
+    List<QueryResult> allResults4Stat = new ArrayList<>();
     List<Long> end2EndDuration = new ArrayList<>(iteration);
-    while (iteration-- > 0) {
+    for (int i = 0; i < iteration; i++) {
       long start = System.currentTimeMillis();
 
       List<QueryResult> cycleResult = query(queryModel.getQuerySlices());
+      totalResultCnt += cycleResult.size();
 
       end2EndDuration.add(System.currentTimeMillis() - start);
+      List<QueryResult> results4Stat = cycleResult.stream()
+          .filter(r -> r.getQuerySlice().isCountInStatistics())
+          .collect(Collectors.toList());
+      LOGGER.info(String.format("skip %d results for statistic in iteration %d ",
+          cycleResult.size() - results4Stat.size(), i));
 
       // do statistics for each iteration
-      outputList.add(HistogramReporter.statistic(cycleResult, queryModel.getReportStore()));
-      allResults.addAll(cycleResult);
+      outputList.add(HistogramReporter.statistic(results4Stat, queryModel.getReportStore()));
+      allResults4Stat.addAll(results4Stat);
 
-      if (iteration > 0 && queryModel.getExecInterval() > 0) {
+      if (i < iteration - 1 && queryModel.getExecInterval() > 0) {
         LOGGER
             .info("Waiting for the next iteration of query: " + queryModel.getExecInterval() + "s");
         Thread.sleep(1000 * queryModel.getExecInterval());
@@ -73,7 +80,7 @@ public class QueryClient {
 
     if (queryModel.getExecIteration() > 1) {
       // statistic over all iterations
-      outputList.add(HistogramReporter.statistic(allResults, queryModel.getReportStore()));
+      outputList.add(HistogramReporter.statistic(allResults4Stat, queryModel.getReportStore()));
     }
 
     LOGGER.info("Query statistics(ms): " + System.lineSeparator() + StringUtils

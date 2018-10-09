@@ -42,23 +42,47 @@ public class QueryClientTest {
   }
 
   private void prepareQueryModel() throws Exception {
-    QuerySlice querySlice1 =
-        QuerySlice.QuerySliceBuilder.aQuerySlice().withId("id1").withSql("show tables")
-            .withThreads(1).withIsConsumeResult(true).withIsCountInStatistics(true)
-            .withType("type1").build();
-    QuerySlice querySlice2 =
-        QuerySlice.QuerySliceBuilder.aQuerySlice().withId("id2").withSql("show databases")
-            .withThreads(5).withIsConsumeResult(true).withIsCountInStatistics(true)
-            .withType("type2").build();
+    QuerySlice querySlice1 = QuerySlice.QuerySliceBuilder.aQuerySlice()
+        .withId("id1")
+        .withSql("show tables")
+        .withThreads(1)
+        .withIsConsumeResult(true)
+        .withIsCountInStatistics(true)
+        .withType("type1")
+        .build();
+    QuerySlice querySlice2 = QuerySlice.QuerySliceBuilder.aQuerySlice()
+        .withId("id2")
+        .withSql("show databases")
+        .withThreads(5)
+        .withIsConsumeResult(true)
+        .withIsCountInStatistics(true)
+        .withType("type2")
+        .build();
+    QuerySlice querySlice3 = QuerySlice.QuerySliceBuilder.aQuerySlice()
+        .withId("id3")
+        .withSql("show tables;show databases")
+        .withThreads(2)
+        .withIsConsumeResult(true)
+        .withIsCountInStatistics(false)
+        .withType("type3")
+        .build();
     List<QuerySlice> querySliceList = new ArrayList<>();
     querySliceList.add(querySlice1);
     querySliceList.add(querySlice2);
-    QueryModel queryModel =
-        QueryModel.QueryModelBuilder.aQueryModel().withJdbcDriver("org.h2.Driver")
-            .withJdbcUrl("jdbc:h2:~/test").withJdbcUser("sa").withJdbcPwd("").withJdbcPoolSize(3)
-            .withExecInterval(2).withExecInterval(2).withExecConcurrentSize(2)
-            .withShuffleExecute(true).withReportStore(rptStorePath).withQuerySlices(querySliceList)
-            .build();
+    querySliceList.add(querySlice3);
+    QueryModel queryModel = QueryModel.QueryModelBuilder.aQueryModel()
+        .withJdbcDriver("org.h2.Driver")
+        .withJdbcUrl("jdbc:h2:~/test")
+        .withJdbcUser("sa")
+        .withJdbcPwd("")
+        .withJdbcPoolSize(3)
+        .withExecInterval(2)
+        .withExecInterval(2)
+        .withExecConcurrentSize(2)
+        .withShuffleExecute(true)
+        .withReportStore(rptStorePath)
+        .withQuerySlices(querySliceList)
+        .build();
 
     LOGGER.info("Prepare query model: " + queryModel);
     Gson gson = new Gson();
