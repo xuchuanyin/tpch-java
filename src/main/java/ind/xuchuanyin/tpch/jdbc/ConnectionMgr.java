@@ -24,7 +24,8 @@ public class ConnectionMgr {
 
   public synchronized void init(String driverName, String url, String user, String pwd, int size) {
     if (!connections.isEmpty()) {
-      LOGGER.warn("Connection pool has already been inited before");
+      LOGGER.warn("Connection pool has already been inited before, will ignore it");
+      return;
     }
     try {
       Class.forName(driverName);
@@ -39,7 +40,7 @@ public class ConnectionMgr {
   }
 
   private Connection newConnection(String url, String user, String pwd) {
-    LOGGER.info("create new jdbc connection, timestamp is " + System.currentTimeMillis());
+    LOGGER.info("Create new jdbc connection, timestamp is " + System.currentTimeMillis());
     Connection conn = null;
     try {
       if (StringUtils.isBlank(user)) {
@@ -50,24 +51,24 @@ public class ConnectionMgr {
     } catch (SQLException e) {
       LOGGER.error("Failed to create connection, time stamp is " + System.currentTimeMillis(), e);
     }
-    LOGGER.error("create connection " + conn);
+    LOGGER.info("Create connection " + conn);
     return conn;
   }
 
   public Connection borrowConnection() {
     Connection conn = connections.poll();
-    LOGGER.error("borrow connection " + conn);
+    LOGGER.info("Borrow connection " + conn);
     return conn;
   }
 
   public void returnConnection(Connection conn) {
-    LOGGER.error("return connection " + conn);
+    LOGGER.info("Return connection " + conn);
     connections.offer(conn);
   }
 
   public void close() {
     for (Connection conn : connections) {
-      LOGGER.info("release connection " + conn);
+      LOGGER.info("Release connection " + conn);
       Utils.closeQuietly(conn);
     }
     connections.clear();

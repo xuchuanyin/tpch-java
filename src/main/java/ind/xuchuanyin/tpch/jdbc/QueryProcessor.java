@@ -49,7 +49,7 @@ public class QueryProcessor {
           .withResultSize(cnt)
           .build();
       if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("query result " + queryResult);
+        LOGGER.debug("Query result " + queryResult);
       }
       return queryResult;
     } catch (SQLException e) {
@@ -95,7 +95,7 @@ public class QueryProcessor {
       try {
         result = internalQuery(conn, querySlice);
       } catch (SQLException e) {
-        LOGGER.error("Failed to execute query", e);
+        LOGGER.error("Failed to execute query " + querySlice, e);
       } finally {
         connectionMgr.returnConnection(conn);
       }

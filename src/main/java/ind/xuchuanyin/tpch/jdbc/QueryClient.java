@@ -10,25 +10,25 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
+import ind.xuchuanyin.tpch.Procedure;
 import ind.xuchuanyin.tpch.common.Utils;
 import ind.xuchuanyin.tpch.report.HistogramReporter;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
-public class QueryClient {
+public class QueryClient implements Procedure {
   private static final Logger LOGGER = Logger.getLogger(QueryClient.class);
+  private String inputFile;
   private QueryModel queryModel;
   private QueryProcessor queryProcessor;
 
-  public QueryClient(String queryModelMetaPath) throws Exception {
-    File file = FileUtils.getFile(queryModelMetaPath);
-    loadQueryModel(file);
+  public QueryClient() {
+  }
 
-    ConnectionMgr.getInstance()
-        .init(queryModel.getJdbcDriver(), queryModel.getJdbcUrl(), queryModel.getJdbcUser(),
-            queryModel.getJdbcPwd(), queryModel.getJdbcPoolSize());
-    queryProcessor = new QueryProcessor(queryModel.getExecConcurrentSize());
+  @Override
+  public void setInputFiles(String... inputFiles) {
+    this.inputFile = inputFiles[0];
   }
 
   private void loadQueryModel(File file) throws IOException {
@@ -37,9 +37,9 @@ public class QueryClient {
     try {
       reader = new FileReader(file);
       queryModel = gson.fromJson(reader, QueryModel.class);
-      LOGGER.info("load data generator model: " + file.getAbsolutePath());
+      LOGGER.info("Load sql execution model: " + file.getAbsolutePath());
     } catch (IOException e) {
-      LOGGER.error("failed to load model for data query from path " + file.getAbsolutePath(), e);
+      LOGGER.error("Failed to load model for sql execution from path " + file.getAbsolutePath(), e);
       throw e;
     } finally {
       if (null != reader) {
@@ -48,7 +48,16 @@ public class QueryClient {
     }
   }
 
+  @Override
   public void ignite() throws Exception {
+    File file = FileUtils.getFile(inputFile);
+    loadQueryModel(file);
+
+    ConnectionMgr.getInstance()
+        .init(queryModel.getJdbcDriver(), queryModel.getJdbcUrl(), queryModel.getJdbcUser(),
+            queryModel.getJdbcPwd(), queryModel.getJdbcPoolSize());
+    queryProcessor = new QueryProcessor(queryModel.getExecConcurrentSize());
+
     int iteration = queryModel.getExecIteration();
     List<String> outputList = new ArrayList<>(iteration);
     List<QueryResult> allResults4Stat = new ArrayList<>();
@@ -62,7 +71,7 @@ public class QueryClient {
       List<QueryResult> results4Stat = cycleResult.stream()
           .filter(r -> r.getQuerySlice().isCountInStatistics())
           .collect(Collectors.toList());
-      LOGGER.info(String.format("skip %d results for statistic in iteration %d ",
+      LOGGER.info(String.format("Skip %d results for statistic in iteration %d ",
           cycleResult.size() - results4Stat.size(), i));
 
       // do statistics for each iteration
@@ -71,7 +80,7 @@ public class QueryClient {
 
       if (i < iteration - 1 && queryModel.getExecInterval() > 0) {
         LOGGER.info(
-            "waiting for the next iteration of query: " + queryModel.getExecInterval() + "s");
+            "Waiting for the next iteration of query: " + queryModel.getExecInterval() + "s");
         Thread.sleep(1000 * queryModel.getExecInterval());
       }
     }
@@ -81,10 +90,10 @@ public class QueryClient {
       outputList.add(HistogramReporter.statistic(allResults4Stat, queryModel.getReportStore()));
     }
 
-    LOGGER.info("query statistics(ms): " + System.lineSeparator()
+    LOGGER.info("Query statistics(ms): " + System.lineSeparator()
         + StringUtils.join(outputList, System.lineSeparator() + "*****" + System.lineSeparator()));
 
-    LOGGER.info("end2End time(ms): " + StringUtils.join(end2EndDuration, ","));
+    LOGGER.info("End2End time(ms): " + StringUtils.join(end2EndDuration, ","));
   }
 
   private List<QueryResult> query(List<QuerySlice> querySlices)
@@ -106,8 +115,8 @@ public class QueryClient {
       List<String> shuffledSeq = Arrays.stream(simpleQuerySliceArray)
           .map(QuerySlice::getId)
           .collect(Collectors.toList());
-      LOGGER.info("original query sequence: " + StringUtils.join(originSeq, ","));
-      LOGGER.info("shuffled query sequence: " + StringUtils.join(shuffledSeq, ","));
+      LOGGER.info("Original query sequence: " + StringUtils.join(originSeq, ","));
+      LOGGER.info("Shuffled query sequence: " + StringUtils.join(shuffledSeq, ","));
       querySlices = Arrays.asList(simpleQuerySliceArray);
     }
 
@@ -116,11 +125,12 @@ public class QueryClient {
     List<Long> timeSeq = queryResults.stream()
         .map(QueryResult::getDuration)
         .collect(Collectors.toList());
-    LOGGER.info("time taken sequence(ms): " + StringUtils.join(timeSeq, ","));
+    LOGGER.info("Time taken sequence(ms): " + StringUtils.join(timeSeq, ","));
 
     return queryResults;
   }
 
+  @Override
   public void close() {
     ConnectionMgr.getInstance().close();
     queryProcessor.close();

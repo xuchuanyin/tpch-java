@@ -6,18 +6,24 @@ import java.io.IOException;
 import java.io.Reader;
 
 import com.google.gson.Gson;
+import ind.xuchuanyin.tpch.Procedure;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 
-public class DataGenerator {
+public class DataGenerator implements Procedure {
   private static final Logger LOGGER = Logger.getLogger(DataGenerator.class);
-  private String dataGenMetaPath;
+  private String inputFile;
   private DataGenModel dataGenModel;
 
-  public DataGenerator(String dataGenMetaPath) {
-    this.dataGenMetaPath = dataGenMetaPath;
+  public DataGenerator() {
   }
 
+  @Override
+  public void setInputFiles(String... inputFiles) {
+    this.inputFile = inputFiles[0];
+  }
+
+  @Override
   public void ignite() throws IOException {
     loadDataGenModel();
 
@@ -30,11 +36,11 @@ public class DataGenerator {
     Gson gson = new Gson();
     Reader reader = null;
     try {
-      reader = new FileReader(dataGenMetaPath + File.separator + DataGenModel.JSON_FILE);
+      reader = new FileReader(inputFile);
       dataGenModel = gson.fromJson(reader, DataGenModel.class);
-      LOGGER.info("load data generator model: " + dataGenModel);
+      LOGGER.info("Load data generator model: " + dataGenModel);
     } catch (IOException e) {
-      LOGGER.error("failed to load model for data generator from path " + dataGenMetaPath, e);
+      LOGGER.error("Failed to load model for data generator from path " + inputFile, e);
       throw e;
     } finally {
       if (null != reader) {
@@ -44,20 +50,20 @@ public class DataGenerator {
   }
 
   private void generate() {
-    LOGGER.info("start to generate data for " + dataGenModel.getTableGenModels().size() + " tables");
+    LOGGER.info("Start to generate data for " + dataGenModel.getTableGenModels().size() + " tables");
     for (TableGenModel tableGenModel : dataGenModel.getTableGenModels()) {
       try {
         generateData4Table(tableGenModel);
       } catch (IOException e) {
-        LOGGER.error("failed to generate data for table: " + tableGenModel.getTpchTableName(), e);
+        LOGGER.error("Failed to generate data for table: " + tableGenModel.getTpchTableName(), e);
         try {
           clearData(tableGenModel.getTpchTableName());
         } catch (IOException ex) {
-          LOGGER.error("failed to clear up tpch table: " + tableGenModel.getTpchTableName(), ex);
+          LOGGER.error("Failed to clear up tpch table: " + tableGenModel.getTpchTableName(), ex);
         }
       }
     }
-    LOGGER.info("succeed to generate data for " + dataGenModel.getTableGenModels().size() + " tables");
+    LOGGER.info("Succeed to generate data for " + dataGenModel.getTableGenModels().size() + " tables");
   }
 
   private void generateData4Table(TableGenModel tableGenModel) throws IOException {
@@ -67,12 +73,12 @@ public class DataGenerator {
 
     FileUtils.forceMkdir(
         FileUtils.getFile(dataGenModel.getTargetDirectory() + File.separator + tpchTableName));
-    LOGGER.info("start to generate data for table " + tpchTableName);
+    LOGGER.info("Start to generate data for table " + tpchTableName);
     for (int part = 1; part <= partCnt; part++) {
       AirliftTpchUtil.getInstance().generateData4PerPart(
           dataGenModel.getTargetDirectory(), tpchTableName, scaleupFactor, part, partCnt);
     }
-    LOGGER.info("succeed to generate data for table " + tpchTableName);
+    LOGGER.info("Succeed to generate data for table " + tpchTableName);
   }
 
   private void clearData(String tpchTableName) throws IOException {
@@ -81,6 +87,11 @@ public class DataGenerator {
   }
 
   private String summary() {
-    return "not implemented yet";
+    return "Not implemented yet";
+  }
+
+  @Override
+  public void close() {
+
   }
 }

@@ -57,7 +57,7 @@ public class TableGenModel implements Normalizer {
       throw new IllegalArgumentException("Unsupported table " + tpchTableName + " is found.");
     }
 
-    // todo: validate others
+    // todo: validate the others
   }
 
   @Override

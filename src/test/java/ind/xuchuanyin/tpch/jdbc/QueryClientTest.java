@@ -2,10 +2,9 @@ package ind.xuchuanyin.tpch.jdbc;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.ArrayList;
-import java.util.List;
 
 import com.google.gson.Gson;
+import ind.xuchuanyin.tpch.common.TestUtil;
 import ind.xuchuanyin.tpch.report.HistogramReporter;
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
@@ -24,7 +23,7 @@ public class QueryClientTest {
     for (String path : new String[] { sqlMetaFile, rptStorePath, mergedTargetrPath }) {
       FileUtils.deleteQuietly(FileUtils.getFile(path));
     }
-    prepareQueryModel(sqlMetaFile);
+    prepareQueryModel();
   }
 
   @After
@@ -34,74 +33,28 @@ public class QueryClientTest {
     }
   }
 
-  private void prepareQueryModel(String queryModelMetaPath) throws Exception {
-    QuerySlice querySlice1 = QuerySlice.QuerySliceBuilder.aQuerySlice()
-        .withId("id1")
-        .withSql("show tables")
-        .withThreads(1)
-        .withIsConsumeResult(true)
-        .withIsCountInStatistics(true)
-        .withType("type1")
-        .build();
-    QuerySlice querySlice2 = QuerySlice.QuerySliceBuilder.aQuerySlice()
-        .withId("id2")
-        .withSql("show databases")
-        .withThreads(5)
-        .withIsConsumeResult(true)
-        .withIsCountInStatistics(true)
-        .withType("type2")
-        .build();
-    QuerySlice querySlice3 = QuerySlice.QuerySliceBuilder.aQuerySlice()
-        .withId("id3")
-        .withSql("show tables;show databases")
-        .withThreads(2)
-        .withIsConsumeResult(true)
-        .withIsCountInStatistics(false)
-        .withType("type3")
-        .build();
-    List<QuerySlice> querySliceList = new ArrayList<>();
-    querySliceList.add(querySlice1);
-    querySliceList.add(querySlice2);
-    querySliceList.add(querySlice3);
-    QueryModel queryModel = QueryModel.QueryModelBuilder.aQueryModel()
-        .withJdbcDriver("org.h2.Driver")
-        .withJdbcUrl("jdbc:h2:~/test")
-        .withJdbcUser("sa")
-        .withJdbcPwd("")
-        .withJdbcPoolSize(3)
-        .withExecInterval(2)
-        .withExecInterval(2)
-        .withExecConcurrentSize(2)
-        .withShuffleExecute(true)
-        .withReportStore(rptStorePath)
-        .withQuerySlices(querySliceList)
-        .build();
-
+  private void prepareQueryModel() throws Exception {
+    QueryModel queryModel = TestUtil.prepareQueryModel(rptStorePath);
     LOGGER.info("Prepare query model: " + queryModel);
     Gson gson = new Gson();
     String jsonStr = gson.toJson(queryModel);
     LOGGER.info("Write query model in json format: " + jsonStr);
-    File file = FileUtils.getFile(queryModelMetaPath);
-    LOGGER.info("Target file is " + file.getAbsolutePath());
-    FileUtils.forceMkdirParent(file);
-    if (file.exists()) {
-      FileUtils.forceDelete(file);
-    }
-    FileUtils.touch(file);
-    FileUtils.write(file, jsonStr, "utf-8");
+    TestUtil.writeToFile(jsonStr, sqlMetaFile);
   }
 
   @Test
   public void testQueryClient() throws Exception {
-    QueryClient queryClient = new QueryClient(sqlMetaFile);
+    QueryClient queryClient = new QueryClient();
+    queryClient.setInputFiles(sqlMetaFile);
     queryClient.ignite();
     queryClient.close();
   }
 
   @Test
   public void testMergeStatistic() throws Exception {
-    QueryClient queryClient = new QueryClient(sqlMetaFile);
+    QueryClient queryClient = new QueryClient();
     // query 2 times will result in 2 statistic file
+    queryClient.setInputFiles(sqlMetaFile);
     queryClient.ignite();
     queryClient.ignite();
 

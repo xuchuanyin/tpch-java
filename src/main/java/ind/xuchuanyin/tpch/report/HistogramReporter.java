@@ -73,10 +73,10 @@ public class HistogramReporter {
         String histogramStr = gson.toJson(histograms);
         FileUtils.write(jsonFile, histogramStr, "utf-8");
         FileUtils.write(tableFile, prettyStr, "utf-8");
-        LOGGER.info(String.format("test reports are generated in path %s and %s",
+        LOGGER.info(String.format("Test reports are generated in path %s and %s",
             jsonFile.getAbsolutePath(), tableFile.getAbsolutePath()));
       } catch (IOException e) {
-        LOGGER.error("failed to write report to file", e);
+        LOGGER.error("Failed to write report to file", e);
       }
     }
 
@@ -101,7 +101,7 @@ public class HistogramReporter {
       queryHistograms = gson.fromJson(reader,
           new TypeToken<List<QueryHistogram>>() {
           }.getType());
-      LOGGER.info("loaded histogram: " + StringUtils.join(queryHistograms, ", "));
+      LOGGER.info("Loaded histogram: " + StringUtils.join(queryHistograms, ", "));
       return queryHistograms;
     } catch (IOException e) {
       LOGGER.error("Failed to load histogram from path " + jsonStatFile, e);

@@ -8,7 +8,6 @@ import org.apache.log4j.Logger;
 
 public class DataGenModel implements Normalizer {
   private static final Logger LOGGER = Logger.getLogger(DataGenModel.class);
-  public static final String JSON_FILE = "data_generate_model.json";
 
   private String targetDirectory;
   private List<TableGenModel> tableGenModels;

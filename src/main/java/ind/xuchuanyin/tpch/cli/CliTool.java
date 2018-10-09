@@ -1,0 +1,175 @@
+package ind.xuchuanyin.tpch.cli;
+
+import java.io.IOException;
+
+import ind.xuchuanyin.tpch.datagen.DataGenerator;
+import ind.xuchuanyin.tpch.e2e.TpchExecutor;
+import ind.xuchuanyin.tpch.jdbc.QueryClient;
+import ind.xuchuanyin.tpch.report.HistogramReporter;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
+
+public class CliTool {
+  private static final Logger LOGGER = Logger.getLogger(CliTool.class);
+  private Options options;
+  private String command;
+  private String[] inputFiles;
+  private String outputPath;
+
+  public CliTool() {
+    this.options = initSupportedOptions();
+  }
+
+  private Options initSupportedOptions() {
+    Options options = new Options();
+    Option help = Option.builder("h")
+        .argName("help")
+        .hasArg()
+        .desc("print this message")
+        .optionalArg(true)
+        .longOpt("help")
+        .build();
+    options.addOption(help);
+
+    Option files = Option.builder("f")
+        .argName("file")
+        .hasArg()
+        .desc("input files")
+        .optionalArg(true)
+        .longOpt("file")
+        .numberOfArgs(Option.UNLIMITED_VALUES)
+        .build();
+    options.addOption(files);
+
+    Option outputFile = Option.builder("o")
+        .argName("output path")
+        .hasArg()
+        .desc("output path for the merged reports")
+        .optionalArg(true)
+        .longOpt("output")
+        .numberOfArgs(1)
+        .build();
+    options.addOption(outputFile);
+
+    Option cmd = Option.builder("c")
+        .argName("cmd")
+        .hasArg()
+        .desc("command to execute, supported commands are: tpch, data_gen, sql_exec, merge_report")
+        .optionalArg(true)
+        .longOpt("command")
+        .numberOfArgs(1)
+        .build();
+    options.addOption(cmd);
+
+    return options;
+  }
+
+  private boolean parseCmdLine(String[] args) {
+    CommandLineParser cmdParser = new DefaultParser();
+    CommandLine cmdLine;
+    try {
+      cmdLine = cmdParser.parse(options, args);
+    } catch (ParseException e) {
+      LOGGER.error("Failed to parse command line", e);
+      System.err.println("Failed to parse command line");
+      return false;
+    }
+
+    if (cmdLine.hasOption("h")) {
+      printHelp();
+      return false;
+    }
+
+    if (cmdLine.hasOption("c")) {
+      this.command = cmdLine.getOptionValue("c");
+    }
+    if (StringUtils.isBlank(this.command)) {
+      LOGGER.error("Should specify a command");
+      System.err.println("Should specify a command");
+      return false;
+    }
+
+    if (cmdLine.hasOption("f")) {
+      this.inputFiles = cmdLine.getOptionValues("f");
+    }
+    if (this.inputFiles == null || this.inputFiles.length == 0) {
+      LOGGER.error("Should specify input files");
+      System.err.println("Should specify input files");
+      return false;
+    }
+
+    if (command.equalsIgnoreCase("merge_report")) {
+      if (cmdLine.hasOption("o")) {
+        this.outputPath = cmdLine.getOptionValue("o");
+      }
+      if (StringUtils.isBlank(this.outputPath)) {
+        LOGGER.error("Should specify output directory for command " + command);
+        System.err.println("Should specify output directory for command " + command);
+        return false;
+      }
+    }
+    return true;
+  }
+
+  private void process() {
+    if (command.equalsIgnoreCase("tpch")) {
+      for (int i = 0; i < inputFiles.length; i++) {
+        try {
+          TpchExecutor tpchExecutor = new TpchExecutor();
+          tpchExecutor.setInputFiles(inputFiles[0]);
+          tpchExecutor.ignite();
+          tpchExecutor.close();
+        } catch (Exception e) {
+          LOGGER.error("Failed to execute tpch for file " + inputFiles[i] + ", will skip it", e);
+        }
+      }
+    } else if (command.equalsIgnoreCase("data_gen")) {
+      for (int i = 0; i < inputFiles.length; i++) {
+        try {
+          DataGenerator dataGenerator = new DataGenerator();
+          dataGenerator.setInputFiles(inputFiles[i]);
+          dataGenerator.ignite();
+        } catch (IOException e) {
+          LOGGER.error("Failed to generate data for file " + inputFiles[i] + ", will skip it", e);
+        }
+      }
+    } else if (command.equalsIgnoreCase("sql_exec")) {
+      for (int i = 0; i < inputFiles.length; i++) {
+        try {
+          QueryClient queryClient = new QueryClient();
+          queryClient.setInputFiles(inputFiles[i]);
+          queryClient.ignite();
+          queryClient.close();
+        } catch (Exception e) {
+          LOGGER.error("Failed to execute query for file " + inputFiles[i] + ", will skip it", e);
+        }
+      }
+    } else if (command.equalsIgnoreCase("merge_report")) {
+      String mergedRpt = HistogramReporter.mergeStatisticFromFile(outputPath, inputFiles);
+      LOGGER.info(mergedRpt);
+    } else {
+      LOGGER.error("Unsupported command " + command);
+      System.err.println("Unsupported command " + command);
+      printHelp();
+    }
+  }
+
+  private void printHelp() {
+    HelpFormatter helpFormatter = new HelpFormatter();
+    helpFormatter.printHelp("run", options);
+  }
+
+  public static void main(String[] args) {
+    CliTool cliTool = new CliTool();
+    if (cliTool.parseCmdLine(args)) {
+      cliTool.process();
+    }
+  }
+}
