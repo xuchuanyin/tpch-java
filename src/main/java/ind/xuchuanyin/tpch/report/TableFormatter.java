@@ -1,7 +1,6 @@
 package ind.xuchuanyin.tpch.report;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -16,11 +15,12 @@ public final class TableFormatter {
   private static final String PAD_STR = " ";
   private static final int EXTRAL_SPACE_4_PAD = 2;
 
-  private boolean isBuildByRow = true;
+  private boolean isBuildByRow;
   private List<String> title;
+  // store the values in vertical or horizontal and can transpose between them
   private List<List<String>> columns;
-  private List<Integer> maxWidthPerColumn;
   private List<List<String>> rows;
+  private List<Integer> maxWidthPerColumn;
   private int maxColumnNumber = 0;
   private int maxRowNumber = 0;
 
@@ -34,15 +34,15 @@ public final class TableFormatter {
     this.maxWidthPerColumn = new ArrayList<>();
   }
 
-  public synchronized TableFormatter addRow(int index, String... row) {
+  public synchronized TableFormatter addRow(int index, List<String> row) {
     if (!isBuildByRow) {
       transpose();
     }
     if (row == null) {
       rows.add(index, new ArrayList<>());
     } else {
-      rows.add(index, Arrays.asList(row));
-      maxColumnNumber = maxColumnNumber > row.length ? maxColumnNumber : row.length;
+      rows.add(index, row);
+      maxColumnNumber = maxColumnNumber > row.size() ? maxColumnNumber : row.size();
 
       // update the maxWidthPerColumn
       if (maxColumnNumber > maxWidthPerColumn.size()) {
@@ -50,7 +50,7 @@ public final class TableFormatter {
             .addAll(Collections.nCopies(maxColumnNumber - maxWidthPerColumn.size(), 0));
       }
       List<Integer> thisWidthes =
-          Arrays.stream(row).map(String::length).collect(Collectors.toList());
+          row.stream().map(String::length).collect(Collectors.toList());
       for (int i = 0; i < maxColumnNumber; i++) {
         if (maxWidthPerColumn.get(i) < thisWidthes.get(i)) {
           maxWidthPerColumn.set(i, thisWidthes.get(i));
@@ -61,19 +61,19 @@ public final class TableFormatter {
     return this;
   }
 
-  public TableFormatter addRow(String... row) {
+  public TableFormatter addRow(List<String> row) {
     return addRow(rows.size(), row);
   }
 
-  public synchronized TableFormatter addColumn(int index, String... column) {
+  public synchronized TableFormatter addColumn(int index, List<String> column) {
     if (isBuildByRow) {
       transpose();
     }
     if (column == null) {
       columns.add(index, new ArrayList<>());
     } else {
-      columns.add(index, Arrays.asList(column));
-      maxRowNumber = maxRowNumber > column.length ? maxRowNumber : column.length;
+      columns.add(index, column);
+      maxRowNumber = maxRowNumber > column.size() ? maxRowNumber : column.size();
     }
     maxColumnNumber++;
 
@@ -83,7 +83,7 @@ public final class TableFormatter {
     }
     if (column != null) {
       Optional<Integer> maxLength =
-          Arrays.stream(column).map(String::length).max(new Comparator<Integer>() {
+          column.stream().map(String::length).max(new Comparator<Integer>() {
             @Override
             public int compare(Integer o1, Integer o2) {
               return o1.compareTo(o2);
@@ -97,7 +97,7 @@ public final class TableFormatter {
     return this;
   }
 
-  public TableFormatter addColumn(String... column) {
+  public TableFormatter addColumn(List<String> column) {
     return addColumn(columns.size(), column);
   }
 
@@ -115,7 +115,7 @@ public final class TableFormatter {
     }
 
     // for title line
-    addRow(0, title.toArray(new String[0]));
+    addRow(0, title);
 
     final StringBuilder sb = new StringBuilder();
 
@@ -142,7 +142,7 @@ public final class TableFormatter {
       for (int colIdx = 0; colIdx < maxColumnNumber; colIdx++) {
         List<String> col = new ArrayList<>();
         for (int rowIdx = 0; rowIdx < maxRowNumber; rowIdx++) {
-          col.add(rows.get(rowIdx).get(rowIdx));
+          col.add(rows.get(rowIdx).get(colIdx));
         }
         columns.add(col);
       }
@@ -173,8 +173,8 @@ public final class TableFormatter {
    */
   private String padChars(String str, String ch, int width) {
     assert str.length() <= width;
-    int leftPad = (width - str.length()) / 2;
-    int rightPad = width - leftPad - str.length();
+    int rightPad = (width - str.length()) / 2;
+    int leftPad = width - rightPad - str.length();
     return duplicateChars(ch, leftPad) + str + duplicateChars(ch, rightPad);
   }
 

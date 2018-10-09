@@ -1,12 +1,24 @@
 package ind.xuchuanyin.tpch.report;
 
-import org.apache.commons.lang3.StringUtils;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
 public final class MyHistogram<T> {
+  private static final List<String> HISTOGRAM_TITLE = new ArrayList<String>() {{
+    add("query");
+    add("size");
+    add("total");
+    add("min");
+    add("max");
+    add("avg");
+    add("25%");
+    add("50%");
+    add("75%");
+    add("90%");
+    add("95%");
+  }};
+  private String query;
   private int size;
   private T total;
   private T min;
@@ -20,6 +32,7 @@ public final class MyHistogram<T> {
 
   @Override public String toString() {
     final StringBuffer sb = new StringBuffer("MyHistogram{");
+    sb.append("query='").append(query).append("'");
     sb.append("size=").append(size);
     sb.append(", total=").append(total);
     sb.append(", min=").append(min);
@@ -34,20 +47,13 @@ public final class MyHistogram<T> {
     return sb.toString();
   }
 
-  public String toPrettyString(String header) {
-    List<String> title = new ArrayList<>(10);
-    title.add("size");
-    title.add("total");
-    title.add("min");
-    title.add("max");
-    title.add("avg");
-    title.add("25%");
-    title.add("50%");
-    title.add("75%");
-    title.add("90%");
-    title.add("95%");
+  public static List<String> getTitle() {
+    return HISTOGRAM_TITLE;
+  }
 
+  public List<String> getRawValue() {
     List<String> value = new ArrayList<>(10);
+    value.add(String.valueOf(this.query));
     value.add(String.valueOf(this.size));
     value.add(String.valueOf(this.total));
     value.add(String.valueOf(this.min));
@@ -59,28 +65,10 @@ public final class MyHistogram<T> {
     value.add(String.valueOf(this.ninety));
     value.add(String.valueOf(this.ninety_five));
 
-    TableFormatter tableFormatter = new TableFormatter(true);
-    tableFormatter.setTitle(title);
-    tableFormatter.addRow(value.toArray(new String[0]));
-    return header + System.lineSeparator() + tableFormatter.toPrettyString();
+    return value;
   }
-
-  public String toCompactString(String header) {
-    List<String> value = new ArrayList<>(10);
-    value.add(String.valueOf(this.size));
-    value.add(String.valueOf(this.total));
-    value.add(String.valueOf(this.min));
-    value.add(String.valueOf(this.max));
-    value.add(String.valueOf(this.avg));
-    value.add(String.valueOf(this.quarter));
-    value.add(String.valueOf(this.half));
-    value.add(String.valueOf(this.three_quarters));
-    value.add(String.valueOf(this.ninety));
-    value.add(String.valueOf(this.ninety_five));
-    return header + ":" + StringUtils.join(value, ",");
-  }
-
   public static final class MyHistogramBuilder<T> {
+    private String query;
     private int size;
     private T total;
     private T min;
@@ -97,6 +85,11 @@ public final class MyHistogram<T> {
 
     public static MyHistogramBuilder createBuilder() {
       return new MyHistogramBuilder();
+    }
+
+    public MyHistogramBuilder withQuery(String query) {
+      this.query = query;
+      return this;
     }
 
     public MyHistogramBuilder withSize(int size) {
@@ -161,11 +154,12 @@ public final class MyHistogram<T> {
       myHistogram.three_quarters = this.three_quarters;
       myHistogram.avg = this.avg;
       myHistogram.size = this.size;
+      myHistogram.query = this.query;
       return myHistogram;
     }
   }
 
-  public static MyHistogram statisticList(List<Long> list) {
+  public static MyHistogram statisticList(String query, List<Long> list) {
     list.sort(new Comparator<Long>() {
       @Override public int compare(Long o1, Long o2) {
         return o1.compareTo(o2);
@@ -198,8 +192,18 @@ public final class MyHistogram<T> {
     MyHistogram.MyHistogramBuilder myHistogramBuilder =
         MyHistogram.MyHistogramBuilder.createBuilder();
 
-    return myHistogramBuilder.withSize(size).withTotal(total).withMin(min).withMax(max).withAvg(avg)
-        .withQuarter(quarter).withHalf(half).withThree_quarters(three_quarters).withNinety(ninety)
-        .withNinety_five(ninety_five).build();
+    return myHistogramBuilder
+        .withQuery(query)
+        .withSize(size)
+        .withTotal(total)
+        .withMin(min)
+        .withMax(max)
+        .withAvg(avg)
+        .withQuarter(quarter)
+        .withHalf(half)
+        .withThree_quarters(three_quarters)
+        .withNinety(ninety)
+        .withNinety_five(ninety_five)
+        .build();
   }
 }

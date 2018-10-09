@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import ind.xuchuanyin.tpch.jdbc.QueryResult;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
 public class HistogramReporter {
@@ -28,7 +27,7 @@ public class HistogramReporter {
           .filter(r -> type.equals("ALL") || r.getQuerySlice().getType().equals(type))
           .map(QueryResult::getDuration)
           .collect(Collectors.toList());
-      MyHistogram histogram = MyHistogram.statisticList(durations);
+      MyHistogram histogram = MyHistogram.statisticList(type, durations);
       histogramMap.put(type, histogram);
     }
 
@@ -40,10 +39,13 @@ public class HistogramReporter {
       }
     });
 
-    List<String> output = listed.stream().map(map -> isPrettyOut ?
-        map.getValue().toPrettyString(map.getKey()) :
-        map.getValue().toCompactString(map.getKey())).collect(Collectors.toList());
+    TableFormatter tableFormatter = new TableFormatter(true);
+    tableFormatter.setTitle(MyHistogram.getTitle());
 
-    return StringUtils.join(output, System.lineSeparator() + System.lineSeparator());
+    for (Map.Entry<String, MyHistogram> entry : listed) {
+      tableFormatter.addRow(entry.getValue().getRawValue());
+    }
+
+    return tableFormatter.toPrettyString();
   }
 }

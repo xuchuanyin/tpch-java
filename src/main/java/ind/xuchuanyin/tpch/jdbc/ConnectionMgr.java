@@ -50,7 +50,7 @@ public class ConnectionMgr {
     } catch (SQLException e) {
       LOGGER.error("Failed to create connection, time stamp is " + System.currentTimeMillis(), e);
     }
-    LOGGER.error("Created connection " + conn);
+    LOGGER.error("create connection " + conn);
     return conn;
   }
 
@@ -67,8 +67,8 @@ public class ConnectionMgr {
 
   public void destroy() {
     for (Connection conn : connections) {
+      LOGGER.info("release connection " + conn);
       Utils.closeQuietly(conn);
     }
   }
-
 }
