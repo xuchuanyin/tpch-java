@@ -17,31 +17,24 @@ public class QueryClientTest {
   private static final Logger LOGGER = Logger.getLogger(QueryClientTest.class);
   private String sqlMetaFile = "sql_meta_test.txt";
   private String rptStorePath = "report";
+  private String mergedTargetrPath = "merged_stat";
 
   @Before
   public void setUp() throws Exception {
-    FileUtils.deleteQuietly(FileUtils.getFile(sqlMetaFile));
-    prepareQueryModel();
+    for (String path : new String[] { sqlMetaFile, rptStorePath, mergedTargetrPath }) {
+      FileUtils.deleteQuietly(FileUtils.getFile(path));
+    }
+    prepareQueryModel(sqlMetaFile);
   }
 
   @After
   public void tearDown() throws Exception {
-    FileUtils.deleteQuietly(FileUtils.getFile(sqlMetaFile));
-    File[] reportFiles = FileUtils.getFile(rptStorePath).listFiles(new FileFilter() {
-      @Override
-      public boolean accept(File pathname) {
-        return pathname.getName().endsWith(HistogramReporter.JSON_RPT_SUFFIX) ||
-            pathname.getName().endsWith(HistogramReporter.TBL_RPT_SUFFIX);
-      }
-    });
-    if (reportFiles != null) {
-      for (File file : reportFiles) {
-        FileUtils.deleteQuietly(file);
-      }
+    for (String path : new String[] { sqlMetaFile, rptStorePath, mergedTargetrPath }) {
+      FileUtils.deleteQuietly(FileUtils.getFile(path));
     }
   }
 
-  private void prepareQueryModel() throws Exception {
+  private void prepareQueryModel(String queryModelMetaPath) throws Exception {
     QuerySlice querySlice1 = QuerySlice.QuerySliceBuilder.aQuerySlice()
         .withId("id1")
         .withSql("show tables")
@@ -88,7 +81,7 @@ public class QueryClientTest {
     Gson gson = new Gson();
     String jsonStr = gson.toJson(queryModel);
     LOGGER.info("Write query model in json format: " + jsonStr);
-    File file = FileUtils.getFile(sqlMetaFile);
+    File file = FileUtils.getFile(queryModelMetaPath);
     LOGGER.info("Target file is " + file.getAbsolutePath());
     FileUtils.forceMkdirParent(file);
     if (file.exists()) {
@@ -102,6 +95,32 @@ public class QueryClientTest {
   public void testQueryClient() throws Exception {
     QueryClient queryClient = new QueryClient(sqlMetaFile);
     queryClient.ignite();
+    queryClient.close();
+  }
+
+  @Test
+  public void testMergeStatistic() throws Exception {
+    QueryClient queryClient = new QueryClient(sqlMetaFile);
+    // query 2 times will result in 2 statistic file
+    queryClient.ignite();
+    queryClient.ignite();
+
+    File[] jsonRptFiles = FileUtils.getFile(rptStorePath).listFiles(new FileFilter() {
+      @Override
+      public boolean accept(File pathname) {
+        return pathname.getName().endsWith(HistogramReporter.JSON_RPT_SUFFIX);
+      }
+    });
+    assert jsonRptFiles != null;
+
+    String[] jsonRptFilePaths = new String[jsonRptFiles.length];
+    for (int i = 0; i < jsonRptFiles.length; i++) {
+      jsonRptFilePaths[i] = jsonRptFiles[i].getAbsolutePath();
+    }
+    String mergedResult =
+        HistogramReporter.mergeStatisticFromFile(mergedTargetrPath, jsonRptFilePaths);
+    LOGGER.info(mergedResult);
+
     queryClient.close();
   }
 }

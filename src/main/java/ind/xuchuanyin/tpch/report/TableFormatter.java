@@ -117,7 +117,7 @@ public final class TableFormatter {
     // for title line
     addRow(0, title);
 
-    final StringBuilder sb = new StringBuilder();
+    final StringBuilder sb = new StringBuilder(System.lineSeparator());
 
     String sep4WholeLine = buildSeperatorLine();
     sb.append(PLUS).append(sep4WholeLine).append(PLUS).append(System.lineSeparator());

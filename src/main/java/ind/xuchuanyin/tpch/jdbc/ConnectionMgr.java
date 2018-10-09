@@ -24,7 +24,7 @@ public class ConnectionMgr {
 
   public synchronized void init(String driverName, String url, String user, String pwd, int size) {
     if (!connections.isEmpty()) {
-      LOGGER.warn("Connection pool");
+      LOGGER.warn("Connection pool has already been inited before");
     }
     try {
       Class.forName(driverName);
@@ -65,10 +65,11 @@ public class ConnectionMgr {
     connections.offer(conn);
   }
 
-  public void destroy() {
+  public void close() {
     for (Connection conn : connections) {
       LOGGER.info("release connection " + conn);
       Utils.closeQuietly(conn);
     }
+    connections.clear();
   }
 }

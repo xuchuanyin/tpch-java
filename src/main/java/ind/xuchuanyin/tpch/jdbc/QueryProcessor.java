@@ -49,7 +49,7 @@ public class QueryProcessor {
           .withResultSize(cnt)
           .build();
       if (LOGGER.isDebugEnabled()) {
-        LOGGER.debug("Query result " + queryResult);
+        LOGGER.debug("query result " + queryResult);
       }
       return queryResult;
     } catch (SQLException e) {
@@ -108,5 +108,6 @@ public class QueryProcessor {
     if (null != executorService) {
       executorService.shutdown();
     }
+    connectionMgr.close();
   }
 }

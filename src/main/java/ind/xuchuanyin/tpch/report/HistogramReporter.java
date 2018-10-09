@@ -1,7 +1,9 @@
 package ind.xuchuanyin.tpch.report;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -9,6 +11,8 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import ind.xuchuanyin.tpch.common.Utils;
 import ind.xuchuanyin.tpch.jdbc.QueryResult;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -34,6 +38,10 @@ public class HistogramReporter {
       histograms.add(histogram);
     }
 
+    return processHistogram(histograms, reportStore);
+  }
+
+  private static String processHistogram(List<QueryHistogram> histograms, String reportStore) {
     histograms.sort(new Comparator<QueryHistogram>() {
       @Override
       public int compare(QueryHistogram o1, QueryHistogram o2) {
@@ -65,13 +73,42 @@ public class HistogramReporter {
         String histogramStr = gson.toJson(histograms);
         FileUtils.write(jsonFile, histogramStr, "utf-8");
         FileUtils.write(tableFile, prettyStr, "utf-8");
-        LOGGER.info(String.format("Test reports are generated in path %s and %s",
+        LOGGER.info(String.format("test reports are generated in path %s and %s",
             jsonFile.getAbsolutePath(), tableFile.getAbsolutePath()));
       } catch (IOException e) {
-        LOGGER.error("Failed to write report to file", e);
+        LOGGER.error("failed to write report to file", e);
       }
     }
 
     return prettyStr;
+  }
+
+  public static String mergeStatisticFromFile(String storePath, String... jsonStatFiles) {
+    List<QueryHistogram> queryHistograms = new ArrayList<>();
+    for (String file : jsonStatFiles) {
+      queryHistograms.addAll(loadHistogram(file));
+    }
+    return processHistogram(queryHistograms, storePath);
+  }
+
+  private static List<QueryHistogram> loadHistogram(String jsonStatFile) {
+    List<QueryHistogram> queryHistograms;
+    Gson gson = new Gson();
+    Reader reader = null;
+    try {
+      reader = new FileReader(jsonStatFile);
+
+      queryHistograms = gson.fromJson(reader,
+          new TypeToken<List<QueryHistogram>>() {
+          }.getType());
+      LOGGER.info("loaded histogram: " + StringUtils.join(queryHistograms, ", "));
+      return queryHistograms;
+    } catch (IOException e) {
+      LOGGER.error("Failed to load histogram from path " + jsonStatFile, e);
+      queryHistograms = new ArrayList<>();
+    } finally {
+      Utils.closeQuietly(reader);
+    }
+    return queryHistograms;
   }
 }

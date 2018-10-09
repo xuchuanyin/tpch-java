@@ -20,7 +20,6 @@ public class QueryClient {
   private static final Logger LOGGER = Logger.getLogger(QueryClient.class);
   private QueryModel queryModel;
   private QueryProcessor queryProcessor;
-  private int totalResultCnt;
 
   public QueryClient(String queryModelMetaPath) throws Exception {
     File file = FileUtils.getFile(queryModelMetaPath);
@@ -38,9 +37,9 @@ public class QueryClient {
     try {
       reader = new FileReader(file);
       queryModel = gson.fromJson(reader, QueryModel.class);
-      LOGGER.info("Load data generator model: " + file.getAbsolutePath());
+      LOGGER.info("load data generator model: " + file.getAbsolutePath());
     } catch (IOException e) {
-      LOGGER.error("Failed to load model for data query from path " + file.getAbsolutePath(), e);
+      LOGGER.error("failed to load model for data query from path " + file.getAbsolutePath(), e);
       throw e;
     } finally {
       if (null != reader) {
@@ -58,7 +57,6 @@ public class QueryClient {
       long start = System.currentTimeMillis();
 
       List<QueryResult> cycleResult = query(queryModel.getQuerySlices());
-      totalResultCnt += cycleResult.size();
 
       end2EndDuration.add(System.currentTimeMillis() - start);
       List<QueryResult> results4Stat = cycleResult.stream()
@@ -72,8 +70,8 @@ public class QueryClient {
       allResults4Stat.addAll(results4Stat);
 
       if (i < iteration - 1 && queryModel.getExecInterval() > 0) {
-        LOGGER
-            .info("Waiting for the next iteration of query: " + queryModel.getExecInterval() + "s");
+        LOGGER.info(
+            "waiting for the next iteration of query: " + queryModel.getExecInterval() + "s");
         Thread.sleep(1000 * queryModel.getExecInterval());
       }
     }
@@ -83,10 +81,10 @@ public class QueryClient {
       outputList.add(HistogramReporter.statistic(allResults4Stat, queryModel.getReportStore()));
     }
 
-    LOGGER.info("Query statistics(ms): " + System.lineSeparator() + StringUtils
-        .join(outputList, System.lineSeparator() + "*****" + System.lineSeparator()));
+    LOGGER.info("query statistics(ms): " + System.lineSeparator()
+        + StringUtils.join(outputList, System.lineSeparator() + "*****" + System.lineSeparator()));
 
-    LOGGER.info("End2End time(ms): " + StringUtils.join(end2EndDuration, ","));
+    LOGGER.info("end2End time(ms): " + StringUtils.join(end2EndDuration, ","));
   }
 
   private List<QueryResult> query(List<QuerySlice> querySlices)
@@ -108,8 +106,8 @@ public class QueryClient {
       List<String> shuffledSeq = Arrays.stream(simpleQuerySliceArray)
           .map(QuerySlice::getId)
           .collect(Collectors.toList());
-      LOGGER.info("Original Query Sequence: " + StringUtils.join(originSeq, ","));
-      LOGGER.info("Shuffled Query Sequence: " + StringUtils.join(shuffledSeq, ","));
+      LOGGER.info("original query sequence: " + StringUtils.join(originSeq, ","));
+      LOGGER.info("shuffled query sequence: " + StringUtils.join(shuffledSeq, ","));
       querySlices = Arrays.asList(simpleQuerySliceArray);
     }
 
@@ -118,13 +116,13 @@ public class QueryClient {
     List<Long> timeSeq = queryResults.stream()
         .map(QueryResult::getDuration)
         .collect(Collectors.toList());
-    LOGGER.info("Time Taken Sequence(ms): " + StringUtils.join(timeSeq, ","));
+    LOGGER.info("time taken sequence(ms): " + StringUtils.join(timeSeq, ","));
 
     return queryResults;
   }
 
   public void close() {
-    ConnectionMgr.getInstance().destroy();
+    ConnectionMgr.getInstance().close();
     queryProcessor.close();
   }
 }
