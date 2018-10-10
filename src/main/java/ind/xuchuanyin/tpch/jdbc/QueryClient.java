@@ -75,8 +75,10 @@ public class QueryClient implements Procedure {
           cycleResult.size() - results4Stat.size(), i));
 
       // do statistics for each iteration
-      outputList.add(HistogramReporter.statistic(results4Stat, queryModel.getReportStore()));
-      allResults4Stat.addAll(results4Stat);
+      if (results4Stat.size() != 0) {
+        outputList.add(HistogramReporter.statistic(results4Stat, queryModel.getReportStore()));
+        allResults4Stat.addAll(results4Stat);
+      }
 
       if (i < iteration - 1 && queryModel.getExecInterval() > 0) {
         LOGGER.info(
@@ -85,7 +87,7 @@ public class QueryClient implements Procedure {
       }
     }
 
-    if (queryModel.getExecIteration() > 1) {
+    if (allResults4Stat.size() != 0 && queryModel.getExecIteration() > 1) {
       // statistic over all iterations
       outputList.add(HistogramReporter.statistic(allResults4Stat, queryModel.getReportStore()));
     }

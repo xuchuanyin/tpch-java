@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import ind.xuchuanyin.tpch.jdbc.QueryModel;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.log4j.Logger;
+
 public final class QueryHistogram<T> {
+  private static final Logger LOGGER = Logger.getLogger(QueryHistogram.class);
   private static final List<String> HISTOGRAM_TITLE = new ArrayList<String>() {{
     add("query");
     add("size");
@@ -165,6 +170,10 @@ public final class QueryHistogram<T> {
   }
 
   public static QueryHistogram statisticList(String query, List<Long> list) {
+    if (CollectionUtils.isEmpty(list)) {
+      LOGGER.error("Encounter empty list for statistic, will return empty histogram");
+      return new QueryHistogram();
+    }
     list.sort(new Comparator<Long>() {
       @Override public int compare(Long o1, Long o2) {
         return o1.compareTo(o2);

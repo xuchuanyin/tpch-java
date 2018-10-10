@@ -171,5 +171,6 @@ public class CliTool {
     if (cliTool.parseCmdLine(args)) {
       cliTool.process();
     }
+    System.exit(0);
   }
 }
