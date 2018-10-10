@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 public class TpchExecutor implements Procedure {
   private static final Logger LOGGER = Logger.getLogger(TpchExecutor.class);
   private String tpchModelPath;
-  private TPCHModel tpchModel;
+  private TpchModel tpchModel;
 
   public TpchExecutor() {
   }
@@ -27,7 +27,7 @@ public class TpchExecutor implements Procedure {
   public void ignite() throws Exception {
     loadTpchModel();
 
-    TPCHModel.ModelWrapper dataGenWrapper = tpchModel.getDataGen();
+    TpchModel.ModelWrapper dataGenWrapper = tpchModel.getDataGen();
     if (dataGenWrapper != null) {
       LOGGER.info("Begin to execute data generate " + dataGenWrapper.toString());
       DataGenerator dataGenerator = new DataGenerator();
@@ -36,7 +36,7 @@ public class TpchExecutor implements Procedure {
       LOGGER.info("Data generate is not configured, will skip it");
     }
 
-    List<TPCHModel.ModelWrapper> sqlExecWrappers = tpchModel.getSqlExec();
+    List<TpchModel.ModelWrapper> sqlExecWrappers = tpchModel.getSqlExec();
     if (sqlExecWrappers != null && sqlExecWrappers.size() > 0) {
       for (int i = 0; i < sqlExecWrappers.size(); i++) {
         QueryClient queryClient = new QueryClient();
@@ -52,7 +52,7 @@ public class TpchExecutor implements Procedure {
     Reader reader = null;
     try {
       reader = new FileReader(tpchModelPath);
-      tpchModel = gson.fromJson(reader, TPCHModel.class);
+      tpchModel = gson.fromJson(reader, TpchModel.class);
       LOGGER.info("Load tpch model: " + tpchModelPath);
     } catch (IOException e) {
       LOGGER.error("Failed to load tpch model from path " + tpchModelPath, e);

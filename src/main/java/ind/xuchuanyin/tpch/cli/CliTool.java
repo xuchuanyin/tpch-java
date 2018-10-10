@@ -163,7 +163,7 @@ public class CliTool {
 
   private void printHelp() {
     HelpFormatter helpFormatter = new HelpFormatter();
-    helpFormatter.printHelp("run", options);
+    helpFormatter.printHelp("java -cp tpch-java.jar ind.xuchuanyin.thch.cli.CliTool ", options);
   }
 
   public static void main(String[] args) {

@@ -68,18 +68,18 @@ public class TpchExecutorTest {
       TestUtil.writeToFile(gson.toJson(queryModel), sqlStatementMetaFiles[i]);
     }
 
-    TPCHModel.ModelWrapper dataGenWrapper =
-        TPCHModel.ModelWrapperBuilder.aModelWrapper().withPreProcessScript("")
+    TpchModel.ModelWrapper dataGenWrapper =
+        TpchModel.ModelWrapperBuilder.aModelWrapper().withPreProcessScript("")
             .withProcessMetaFilePath(dataGenMetaFile).withPostProcessScript("").build();
-    List<TPCHModel.ModelWrapper> sqlExecWrappers = new ArrayList<>();
+    List<TpchModel.ModelWrapper> sqlExecWrappers = new ArrayList<>();
     for (int i = 0; i < sqlStatementMetaFiles.length; i++) {
-      TPCHModel.ModelWrapper sqlExecWrapper =
-          TPCHModel.ModelWrapperBuilder.aModelWrapper().withPreProcessScript("")
+      TpchModel.ModelWrapper sqlExecWrapper =
+          TpchModel.ModelWrapperBuilder.aModelWrapper().withPreProcessScript("")
               .withProcessMetaFilePath(sqlStatementMetaFiles[i]).withPostProcessScript("").build();
       sqlExecWrappers.add(sqlExecWrapper);
     }
 
-    TPCHModel tpchModel = TPCHModel.TPCHModelBuilder.aTPCHModel().withDataGen(dataGenWrapper)
+    TpchModel tpchModel = TpchModel.TPCHModelBuilder.aTPCHModel().withDataGen(dataGenWrapper)
         .withSqlExec(sqlExecWrappers).build();
     TestUtil.writeToFile(gson.toJson(tpchModel), tpchModelMetaFile);
   }

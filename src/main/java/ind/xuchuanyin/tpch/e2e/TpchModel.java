@@ -8,7 +8,7 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 
-public class TPCHModel {
+public class TpchModel {
   public static class ModelWrapper {
     private static final Logger LOGGER = Logger.getLogger(ModelWrapper.class);
     private String preProcessScript;
@@ -76,7 +76,7 @@ public class TPCHModel {
   private ModelWrapper dataGen;
   private List<ModelWrapper> sqlExec;
 
-  public TPCHModel() {
+  public TpchModel() {
   }
 
   public ModelWrapper getDataGen() {
@@ -97,7 +97,7 @@ public class TPCHModel {
 
   @Override
   public String toString() {
-    final StringBuffer sb = new StringBuffer("TPCHModel{");
+    final StringBuffer sb = new StringBuffer("TpchModel{");
     sb.append("dataGen=").append(dataGen);
     sb.append(", sqlExec=").append(sqlExec);
     sb.append('}');
@@ -160,8 +160,8 @@ public class TPCHModel {
       return this;
     }
 
-    public TPCHModel build() {
-      TPCHModel tPCHModel = new TPCHModel();
+    public TpchModel build() {
+      TpchModel tPCHModel = new TpchModel();
       tPCHModel.setDataGen(dataGen);
       tPCHModel.setSqlExec(sqlExec);
       return tPCHModel;
