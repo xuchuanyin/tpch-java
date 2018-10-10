@@ -1,0 +1,24 @@
+{
+  "dataGen": {
+    "preProcessScript": "",
+    "processMetaFilePath": "examples/carbondata/tpch_data_generate.json",
+    "postProcessScript": "examples/common/tpch_data_to_hdfs.sh"
+  },
+  "sqlExec": [
+    {
+      "preProcessScript": "",
+      "processMetaFilePath": "examples/carbondata/carbon_tpch_table_create.json",
+      "postProcessScript": ""
+    },
+    {
+      "preProcessScript": "",
+      "processMetaFilePath": "examples/carbondata/carbon_tpch_table_load.json",
+      "postProcessScript": ""
+    },
+    {
+      "preProcessScript": "",
+      "processMetaFilePath": "examples/carbondata/carbon_tpch_table_query.json",
+      "postProcessScript": ""
+    }
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "jdbcUrl": "jdbc:h2:~/test",
+  "jdbcUser": "sa",
+  "jdbcPwd": "",
+  "jdbcDriver": "org.h2.Driver",
+  "jdbcPoolSize": 1,
+  "execIteration": 1,
+  "execInterval": 0,
+  "execConcurrentSize": 1,
+  "shuffleExecute": false,
+  "reportStore": "report/parquet_load",
+  "querySlices": [
+    {
+      "id": "parquet-load-id01",
+      "sql": "use tpchparquet_partition",
+      "type": "parquert-prepare",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": false
+    },
+    {
+      "id": "parquet-load-id02",
+      "sql": "set hive.exec.dynamic.partition.mode=nonstrict",
+      "type": "parquert-prepare",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": false
+    },
+    {
+      "id": "parquet-load-id03",
+      "sql": "set hive.exec.dynamic.partition=true",
+      "type": "parquert-prepare",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": false
+    },
+    {
+      "id": "parquet-load-id04",
+      "sql": "set hive.exec.max.dynamic.partitions=10000",
+      "type": "parquert-prepare",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": false
+    },
+    {
+      "id": "parquet-load-id4",
+      "sql": "insert into table supplier select * from tpchhive.supplier",
+      "type": "parquet-load-supplier",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": true
+    },
+    {
+      "id": "parquet-load-id5",
+      "sql": "insert into table PARTSUPP select * from tpchhive.partsupp",
+      "type": "parquet-load-partsupp",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": true
+    },
+    {
+      "id": "parquet-load-id6",
+      "sql": "insert into table CUSTOMER partition(C_MKTSEGMENT) select C_CUSTKEY,C_NAME,C_ADDRESS,C_NATIONKEY,C_PHONE,C_ACCTBAL,C_COMMENT,C_MKTSEGMENT from tpchhive.customer",
+      "type": "parquet-load-customer",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": true
+    },
+    {
+      "id": "parquet-load-id7",
+      "sql": "insert into table nation partition(N_NAME) select N_NATIONKEY,N_REGIONKEY,N_COMMENT,n_name from tpchhive.nation",
+      "type": "parquet-load-nation",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": true
+    },
+    {
+      "id": "parquet-load-id8",
+      "sql": "insert into table REGION partition(r_name) select R_REGIONKEY,R_COMMENT,r_name from tpchhive.region",
+      "type": "parquet-load-region",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": true
+    },
+    {
+      "id": "parquet-load-id9",
+      "sql": "insert into TABLE PART partition(P_BRAND) select P_PARTKEY,P_NAME,P_MFGR,P_TYPE,P_SIZE,P_CONTAINER,P_RETAILPRICE,P_COMMENT,P_BRAND from tpchhive.part",
+      "type": "parquet-load-part",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": true
+    },
+    {
+      "id": "parquet-load-id10",
+      "sql": "insert into table lineitem partition(L_SHIPDATE) select L_ORDERKEY,L_PARTKEY,L_SUPPKEY,L_LINENUMBER,L_QUANTITY,L_EXTENDEDPRICE,L_DISCOUNT,L_TAX,L_RETURNFLAG,L_LINESTATUS,L_COMMITDATE,L_RECEIPTDATE,L_SHIPINSTRUCT,L_SHIPMODE,L_COMMENT, l_shipdate from tpchhive.lineitem DISTRIBUTE BY l_shipdate",
+      "type": "parquet-load-lineitem",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": true
+    },
+    {
+      "id": "parquet-load-id11",
+      "sql": "insert into table ORDERS partition(O_ORDERDATE) select O_ORDERKEY,O_CUSTKEY,O_ORDERSTATUS,O_TOTALPRICE,O_ORDERPRIORITY,O_CLERK,O_SHIPPRIORITY,O_COMMENT,o_orderdate from tpchhive.ORDERS DISTRIBUTE BY O_ORDERDATE",
+      "type": "parquet-load-orders",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": true
+    }
+  ]
+}

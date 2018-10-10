@@ -1,0 +1,102 @@
+{
+  "jdbcUrl": "jdbc:h2:~/test",
+  "jdbcUser": "sa",
+  "jdbcPwd": "",
+  "jdbcDriver": "org.h2.Driver",
+  "jdbcPoolSize": 1,
+  "execIteration": 1,
+  "execInterval": 0,
+  "execConcurrentSize": 1,
+  "shuffleExecute": false,
+  "reportStore": "",
+  "querySlices": [
+    {
+      "id": "parquet-preload-id01",
+      "sql": "drop database if exists tpchhive cascade",
+      "type": "parquet-preload",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": false
+    },
+    {
+      "id": "parquet-preload-id02",
+      "sql": "create database tpchhive",
+      "type": "parquet-preload",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": false
+    },
+    {
+      "id": "parquet-preload-id03",
+      "sql": "use tpchhive",
+      "type": "parquet-preload",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": false
+    },
+    {
+      "id": "parquet-preload-id04",
+      "sql": "create table if not exists SUPPLIER(S_SUPPKEY string, S_NAME string, S_ADDRESS string, S_NATIONKEY string, S_PHONE string, S_ACCTBAL double, S_COMMENT string) ROW FORMAT DELIMITED FIELDS TERMINATED BY '|' STORED AS TEXTFILE LOCATION 'hdfs://carbon1:9000/tpch-data/supplier'",
+      "type": "parquet-preload",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": false
+    },
+    {
+      "id": "parquet-preload-id05",
+      "sql": "create table if not exists PARTSUPP(PS_PARTKEY int , PS_SUPPKEY string, PS_AVAILQTY int, PS_SUPPLYCOST double, PS_COMMENT string) ROW FORMAT DELIMITED FIELDS TERMINATED BY '|' STORED AS TEXTFILE LOCATION 'hdfs://carbon1:9000/tpch-data/partsupp'",
+      "type": "parquet-preload",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": false
+    },
+    {
+      "id": "parquet-preload-id06",
+      "sql": "create table if not exists CUSTOMER(C_CUSTKEY string, C_NAME string, C_ADDRESS string, C_NATIONKEY string, C_PHONE string, C_ACCTBAL double, C_MKTSEGMENT string, C_COMMENT string) ROW FORMAT DELIMITED FIELDS TERMINATED BY '|' STORED AS TEXTFILE LOCATION 'hdfs://carbon1:9000/tpch-data/customer'",
+      "type": "parquet-preload",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": false
+    },
+    {
+      "id": "parquet-preload-id07",
+      "sql": "create table if not exists NATION(N_NATIONKEY string, N_NAME string, N_REGIONKEY string, N_COMMENT string) ROW FORMAT DELIMITED FIELDS TERMINATED BY '|' STORED AS TEXTFILE LOCATION 'hdfs://carbon1:9000/tpch-data/nation'",
+      "type": "parquet-preload",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": false
+    },
+    {
+      "id": "parquet-preload-id08",
+      "sql": "create table if not exists REGION(R_REGIONKEY string, R_NAME string, R_COMMENT string) ROW FORMAT DELIMITED FIELDS TERMINATED BY '|' STORED AS TEXTFILE LOCATION 'hdfs://carbon1:9000/tpch-data/region'",
+      "type": "parquet-preload",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": false
+    },
+    {
+      "id": "parquet-preload-id09",
+      "sql": "create table if not exists PART(P_PARTKEY INT, P_NAME string, P_MFGR string, P_BRAND string, P_TYPE string, P_SIZE int, P_CONTAINER string, P_RETAILPRICE double, P_COMMENT string) ROW FORMAT DELIMITED FIELDS TERMINATED BY '|' STORED AS TEXTFILE LOCATION 'hdfs://carbon1:9000/tpch-data/part'",
+      "type": "parquet-preload",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": false
+    },
+    {
+      "id": "parquet-preload-id10",
+      "sql": "create table if not exists LINEITEM(L_ORDERKEY INT , L_PARTKEY INT , L_SUPPKEY string, L_LINENUMBER int, L_QUANTITY double, L_EXTENDEDPRICE double, L_DISCOUNT double, L_TAX double, L_RETURNFLAG string, L_LINESTATUS string, L_SHIPDATE date, L_COMMITDATE date, L_RECEIPTDATE date, L_SHIPINSTRUCT string, L_SHIPMODE string, L_COMMENT string) ROW FORMAT DELIMITED FIELDS TERMINATED BY '|' STORED AS TEXTFILE LOCATION 'hdfs://carbon1:9000/tpch-data/lineitem'",
+      "type": "parquet-preload",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": false
+    },
+    {
+      "id": "parquet-preload-id11",
+      "sql": "create table if not exists ORDERS(O_ORDERKEY int, O_CUSTKEY string, O_ORDERSTATUS string, O_TOTALPRICE double, O_ORDERDATE date, O_ORDERPRIORITY string, O_CLERK string, O_SHIPPRIORITY int, O_COMMENT string) ROW FORMAT DELIMITED FIELDS TERMINATED BY '|' STORED AS TEXTFILE LOCATION 'hdfs://carbon1:9000/tpch-data/orders'",
+      "type": "parquet-preload",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": false
+    }
+  ]
+}

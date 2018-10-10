@@ -1,0 +1,86 @@
+{
+  "jdbcUrl": "jdbc:h2:~/test",
+  "jdbcUser": "sa",
+  "jdbcPwd": "",
+  "jdbcDriver": "org.h2.Driver",
+  "jdbcPoolSize": 1,
+  "execIteration": 1,
+  "execInterval": 0,
+  "execConcurrentSize": 1,
+  "shuffleExecute": false,
+  "reportStore": "report/carbon_load",
+  "querySlices": [
+    {
+      "id": "carbon-load-id1",
+      "sql": "use tpchcarbon_base",
+      "type": "carbon-load-prepare",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": false
+    },
+    {
+      "id": "carbon-load-id4",
+      "sql": "load data inpath 'hdfs://carbon1:9000/tpch-data/supplier' into table SUPPLIER options ('header'='false','delimiter'='|')",
+      "type": "carbon-load-supplier",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": true
+    },
+    {
+      "id": "carbon-load-id5",
+      "sql": "load data inpath 'hdfs://carbon1:9000/tpch-data/partsupp' into table PARTSUPP options ('header'='false','delimiter'='|')",
+      "type": "carbon-load-partsupp",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": true
+    },
+    {
+      "id": "carbon-load-id6",
+      "sql": "load data inpath 'hdfs://carbon1:9000/tpch-data/customer' into table CUSTOMER options ('header'='false','delimiter'='|')",
+      "type": "carbon-load-customer",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": true
+    },
+    {
+      "id": "carbon-load-id7",
+      "sql": "load data inpath 'hdfs://carbon1:9000/tpch-data/nation' into table NATION options ('header'='false','delimiter'='|')",
+      "type": "carbon-load-nation",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": true
+    },
+    {
+      "id": "carbon-load-id8",
+      "sql": "load data inpath 'hdfs://carbon1:9000/tpch-data/region' into table REGION options ('header'='false','delimiter'='|')",
+      "type": "carbon-load-region",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": true
+    },
+    {
+      "id": "carbon-load-id9",
+      "sql": "load data inpath 'hdfs://carbon1:9000/tpch-data/part' into table PART options ('header'='false','delimiter'='|')",
+      "type": "carbon-load-part",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": true
+    },
+    {
+      "id": "carbon-load-id10",
+      "sql": "load data inpath 'hdfs://carbon1:9000/tpch-data/lineitem' into table LINEITEM options ('header'='false','delimiter'='|')",
+      "type": "carbon-load-lineitem",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": true
+    },
+    {
+      "id": "carbon-load-id11",
+      "sql": "load data inpath 'hdfs://carbon1:9000/tpch-data/orders' into table ORDERS options ('header'='false','delimiter'='|')",
+      "type": "carbon-load-orders",
+      "threads": 1,
+      "isConsumeResult": false,
+      "isCountInStatistics": true
+    }
+  ]
+}
