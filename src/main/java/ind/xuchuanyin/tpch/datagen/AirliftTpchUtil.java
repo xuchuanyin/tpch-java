@@ -23,7 +23,7 @@ public class AirliftTpchUtil {
   public void generateData4PerPart(String baseDirectory, String tpchTableName, double scalupFactor,
       int part, int partCnt) throws IOException {
     LOGGER.info(
-        String.format("Start to generate Data for table#%s-part#%d/%d in base directory %s",
+        String.format("Start to generate data for table#%s-part#%d/%d in base directory %s",
             tpchTableName, part, partCnt, baseDirectory));
     Writer writer = null;
     try {
@@ -50,7 +50,7 @@ public class AirliftTpchUtil {
       }
     }
     LOGGER.info(
-        String.format("Succeed to generate Data for table#%s-part#%d/%d in base directory %s",
+        String.format("Succeed to generate data for table#%s-part#%d/%d in base directory %s",
             tpchTableName, part, partCnt, baseDirectory));
   }
 }

@@ -74,8 +74,9 @@ Each `TableGenModel` represents a TPCH table to be generated.
 ### **Step2**: executing through command line
 
 ```bash
-java -cp tpch-java.jar ind.xuchuanyin.thch.cli.CliTool -c data_gen -f path_to_generate_tpch_data
+java -cp tpch-java-1.0-SNAPSHOT-jar-with-dependencies.jar ind.xuchuanyin.tpch.cli.CliTool -c data_gen -f path_to_generate_tpch_data
 ```
+**Note**: To get the jar, you need to build the project using maven.
 
 ### **Step2 alternative**: executing through java code
 
@@ -167,7 +168,7 @@ Each `QuerySlice` represents a specific sql statement.
 ### **Step2**: executing through command line
 
 ```bash
-java -cp tpch-java.jar ind.xuchuanyin.thch.cli.CliTool -c sql_exec -f path_to_execute_sql
+java -cp tpch-java-1.0-SNAPSHOT-jar-with-dependencies.jar ind.xuchuanyin.tpch.cli.CliTool -c sql_exec -f path_to_execute_sql
 ```
 
 ### **Step2 alternative**: executing through java code
@@ -308,7 +309,7 @@ This file represents a `TpchModel`. The content looks like below:
 ### **Step2**: executing through command line
 
 ```bash
-java -cp tpch-java.jar ind.xuchuanyin.thch.cli.CliTool -c tpch -f path_to_tpch_model
+java -cp tpch-java-1.0-SNAPSHOT-jar-with-dependencies.jar ind.xuchuanyin.tpch.cli.CliTool -c tpch -f path_to_tpch_model
 ```
 
 ### **Step2 alternative**: executing through java code
@@ -327,7 +328,7 @@ tpchExecutor.close();
 ### **Step1**: executing through command line
 
 ```bash
-java -cp tpch-java.jar ind.xuchuanyin.thch.cli.CliTool -c merge_report -f report1_json report2_json -o merge_report_out_path
+java -cp tpch-java-1.0-SNAPSHOT-jar-with-dependencies.jar ind.xuchuanyin.tpch.cli.CliTool -c merge_report -f report1_json report2_json -o merge_report_out_path
 ```
 
 ### **Step1 alternative**: executing through java code
