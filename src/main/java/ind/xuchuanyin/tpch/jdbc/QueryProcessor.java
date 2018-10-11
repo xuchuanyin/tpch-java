@@ -96,6 +96,11 @@ public class QueryProcessor {
         result = internalQuery(conn, querySlice);
       } catch (SQLException e) {
         LOGGER.error("Failed to execute query " + querySlice, e);
+        result = QueryResult.QueryResultBuilder.aQueryResult()
+            .withQuerySlice(querySlice)
+            .withDuration(-1)
+            .withResultSize(-1)
+            .build();
       } finally {
         connectionMgr.returnConnection(conn);
       }

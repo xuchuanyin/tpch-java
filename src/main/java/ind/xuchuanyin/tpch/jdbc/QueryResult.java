@@ -2,7 +2,7 @@ package ind.xuchuanyin.tpch.jdbc;
 
 public final class QueryResult {
   private QuerySlice querySlice;
-  private long duration;
+  private long duration = -1;
   private int resultSize;
 
   public QueryResult() {

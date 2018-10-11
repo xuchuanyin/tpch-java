@@ -158,7 +158,7 @@ Each `QuerySlice` represents a specific sql statement.
 
 | Name | Default | Required | Note |
 | --- | --- | --- | --- |
-| id | UUID | N | To distinguish a SQL |
+| id | q${nanotime} | N | To distinguish a SQL, especially when we shuffle a batch of sqls, we use this id to represent each sql |
 | sql | - | Y | SQL to be executed |
 | type | unclassified | N | Type of SQL which will be used in statistics. For each type, a statistics will be performed |
 | threads | 1 | N | SQL will be executed `threads` times in one iteration |

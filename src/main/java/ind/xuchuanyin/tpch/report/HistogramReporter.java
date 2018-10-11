@@ -14,6 +14,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import ind.xuchuanyin.tpch.common.Utils;
 import ind.xuchuanyin.tpch.jdbc.QueryResult;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -42,6 +43,9 @@ public class HistogramReporter {
   }
 
   private static String processHistogram(List<QueryHistogram> histograms, String reportStore) {
+    if (CollectionUtils.isEmpty(histograms)) {
+      return "Empty histograms provided, will skip generating report";
+    }
     histograms.sort(new Comparator<QueryHistogram>() {
       @Override
       public int compare(QueryHistogram o1, QueryHistogram o2) {
@@ -103,7 +107,7 @@ public class HistogramReporter {
           }.getType());
       LOGGER.info("Loaded histogram: " + StringUtils.join(queryHistograms, ", "));
       return queryHistograms;
-    } catch (IOException e) {
+    } catch (Exception e) {
       LOGGER.error("Failed to load histogram from path " + jsonStatFile, e);
       queryHistograms = new ArrayList<>();
     } finally {

@@ -41,6 +41,9 @@ public class TableGenModel implements Normalizer {
 
   @Override
   public void normalize() throws IllegalArgumentException {
+    if (null == tpchTableName) {
+      throw new IllegalArgumentException("'tpchTableName' is required in TableGenModel");
+    }
     // validate tableName
     Collection<String> nativeTpchTables =
         CollectionUtils.collect(TpchTable.getTables(), new Transformer<TpchTable<?>, String>() {

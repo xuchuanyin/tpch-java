@@ -1,0 +1,30 @@
+{
+  "jdbcUrl": "jdbc:h2:~/test",
+  "jdbcUser": "sa",
+  "jdbcPwd": "",
+  "jdbcDriver": "org.h2.Driver",
+  "jdbcPoolSize": 3,
+  "execIteration": 2,
+  "execInterval": 1,
+  "execConcurrentSize": 2,
+  "shuffleExecute": true,
+  "reportStore": "test_report_out",
+  "querySlices": [
+    {
+      "id": "id1",
+      "sql": "show tables",
+      "type": "type1",
+      "threads": 1,
+      "isConsumeResult": true,
+      "isCountInStatistics": true
+    },
+    {
+      "id": "id2",
+      "sql": "show databases",
+      "type": "type2",
+      "threads": 5,
+      "isConsumeResult": true,
+      "isCountInStatistics": true
+    }
+  ]
+}

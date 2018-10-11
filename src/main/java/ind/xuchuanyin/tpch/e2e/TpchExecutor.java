@@ -29,7 +29,7 @@ public class TpchExecutor implements Procedure {
 
     TpchModel.ModelWrapper dataGenWrapper = tpchModel.getDataGen();
     if (dataGenWrapper != null) {
-      LOGGER.info("Begin to execute data generate " + dataGenWrapper.toString());
+      LOGGER.info("Begin to process dataGen " + dataGenWrapper.toString());
       DataGenerator dataGenerator = new DataGenerator();
       dataGenWrapper.process(dataGenerator);
     } else {
@@ -39,6 +39,7 @@ public class TpchExecutor implements Procedure {
     List<TpchModel.ModelWrapper> sqlExecWrappers = tpchModel.getSqlExec();
     if (sqlExecWrappers != null && sqlExecWrappers.size() > 0) {
       for (int i = 0; i < sqlExecWrappers.size(); i++) {
+        LOGGER.info("Begin to process sqlExec " +  sqlExecWrappers.toString());
         QueryClient queryClient = new QueryClient();
         sqlExecWrappers.get(i).process(queryClient);
       }

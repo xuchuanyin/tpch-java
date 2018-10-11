@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 
 public class DataGenerator implements Procedure {
   private static final Logger LOGGER = Logger.getLogger(DataGenerator.class);
-  private String inputFile;
+  private String inputFilePath;
   private DataGenModel dataGenModel;
 
   public DataGenerator() {
@@ -20,7 +20,7 @@ public class DataGenerator implements Procedure {
 
   @Override
   public void setInputFiles(String... inputFiles) {
-    this.inputFile = inputFiles[0];
+    this.inputFilePath = inputFiles[0];
   }
 
   @Override
@@ -35,12 +35,15 @@ public class DataGenerator implements Procedure {
   private void loadDataGenModel() throws IOException {
     Gson gson = new Gson();
     Reader reader = null;
+    File file = FileUtils.getFile(inputFilePath);
     try {
-      reader = new FileReader(inputFile);
+      reader = new FileReader(file);
       dataGenModel = gson.fromJson(reader, DataGenModel.class);
-      LOGGER.info("Load data generator model: " + dataGenModel);
+      LOGGER.info("Loaded data generator model: " + dataGenModel);
     } catch (IOException e) {
-      LOGGER.error("Failed to load model for data generator from path " + inputFile, e);
+      LOGGER.error(String.format(
+          "Failed to load model for data generator from path %s, absolute path is %s",
+          inputFilePath, file.getAbsolutePath()), e);
       throw e;
     } finally {
       if (null != reader) {

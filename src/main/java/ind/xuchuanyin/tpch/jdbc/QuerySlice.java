@@ -1,9 +1,7 @@
 package ind.xuchuanyin.tpch.jdbc;
 
-import java.util.UUID;
-
 public class QuerySlice {
-  private String id = UUID.randomUUID().toString();
+  private String id = "q" + System.nanoTime();
   private String sql;
   private String type = "unclassified";
   private int threads = 1;
@@ -74,7 +72,7 @@ public class QuerySlice {
   }
 
   public static final class QuerySliceBuilder {
-    private String id = UUID.randomUUID().toString();
+    private String id = "q" + System.nanoTime();
     private String sql;
     private String type = "unclassfied";
     private int threads = 1;

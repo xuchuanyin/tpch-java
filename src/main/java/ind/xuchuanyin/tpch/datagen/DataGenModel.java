@@ -1,6 +1,9 @@
 package ind.xuchuanyin.tpch.datagen;
 
+import java.io.File;
+import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import ind.xuchuanyin.tpch.Normalizer;
 import org.apache.commons.io.FileUtils;
@@ -30,13 +33,36 @@ public class DataGenModel implements Normalizer {
 
   @Override
   public void normalize() throws IllegalArgumentException {
-    if (!FileUtils.getFile(targetDirectory).mkdirs()) {
-      throw new IllegalArgumentException(
-          "Failed to create target directory for data generate: " + targetDirectory);
+    if (null == targetDirectory) {
+      throw new IllegalArgumentException("'targetDirectory' is required in DataGenModel");
     }
 
-    for (TableGenModel tableGenModel : tableGenModels) {
-      tableGenModel.normalize();
+    File targetDir = FileUtils.getFile(targetDirectory);
+    if (!targetDir.exists() && !targetDir.mkdirs()) {
+      throw new IllegalArgumentException(
+          "Failed to create target directory for data generate: " + targetDir.getAbsolutePath());
+    }
+
+    if (null == tableGenModels) {
+      throw new IllegalArgumentException("'tableGenModel' is required in DataGenModel");
+    }
+
+    Iterator<TableGenModel> iterator = tableGenModels.iterator();
+    while (iterator.hasNext()) {
+      TableGenModel tableGenModel = iterator.next();
+      try {
+        tableGenModel.normalize();
+      } catch (IllegalArgumentException e) {
+        LOGGER.error(
+            "Illegal tableGenModel is provided (" + tableGenModel + "), will skip this.", e);
+        iterator.remove();
+      }
+    }
+
+    int sizeAfterDeDuplicate = tableGenModels.stream()
+        .map(TableGenModel::getTpchTableName).collect(Collectors.toSet()).size();
+    if (sizeAfterDeDuplicate < tableGenModels.size()) {
+      throw new IllegalArgumentException("Duplicate tpch table names are found");
     }
   }
 
