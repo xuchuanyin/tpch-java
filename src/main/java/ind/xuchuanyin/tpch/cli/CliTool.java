@@ -61,7 +61,7 @@ public class CliTool {
     Option cmd = Option.builder("c")
         .argName("cmd")
         .hasArg()
-        .desc("command to execute, supported commands are: tpch, data_gen, sql_exec, merge_report")
+        .desc("command to execute, supported commands are: tpch, gen_data, exec_sql, merge_report")
         .optionalArg(true)
         .longOpt("command")
         .numberOfArgs(1)
@@ -130,7 +130,7 @@ public class CliTool {
           LOGGER.error("Failed to execute tpch for file " + inputFiles[i] + ", will skip it", e);
         }
       }
-    } else if (command.equalsIgnoreCase("data_gen")) {
+    } else if (command.equalsIgnoreCase("gen_data")) {
       for (int i = 0; i < inputFiles.length; i++) {
         try {
           DataGenerator dataGenerator = new DataGenerator();
@@ -140,7 +140,7 @@ public class CliTool {
           LOGGER.error("Failed to generate data for file " + inputFiles[i] + ", will skip it", e);
         }
       }
-    } else if (command.equalsIgnoreCase("sql_exec")) {
+    } else if (command.equalsIgnoreCase("exec_sql")) {
       for (int i = 0; i < inputFiles.length; i++) {
         try {
           QueryClient queryClient = new QueryClient();
@@ -171,6 +171,5 @@ public class CliTool {
     if (cliTool.parseCmdLine(args)) {
       cliTool.process();
     }
-    System.exit(0);
   }
 }

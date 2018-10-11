@@ -126,14 +126,14 @@ public class TpchExecutorTest {
 
     clearTempStore();
     // generate data
-    cmd = "-c data_gen -f " + dataGenMetaFile;
+    cmd = "-c gen_data -f " + dataGenMetaFile;
     processCmd(cmd);
     clearTempStore();
 
     clearTempStore();
     // execute queries
     for (int i = 0; i < sqlStatementMetaFiles.length; i++) {
-      cmd = "-c sql_exec -f " + sqlStatementMetaFiles[i];
+      cmd = "-c exec_sql -f " + sqlStatementMetaFiles[i];
       processCmd(cmd);
     }
     clearTempStore();

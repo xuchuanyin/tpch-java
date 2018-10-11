@@ -74,7 +74,7 @@ Each `TableGenModel` represents a TPCH table to be generated.
 ### **Step2**: executing through command line
 
 ```bash
-java -cp tpch-java-1.0-SNAPSHOT-jar-with-dependencies.jar ind.xuchuanyin.tpch.cli.CliTool -c data_gen -f path_to_generate_tpch_data
+java -cp tpch-java-1.0-SNAPSHOT-jar-with-dependencies.jar ind.xuchuanyin.tpch.cli.CliTool -c gen_data -f path_to_generate_tpch_data
 ```
 **Note**: To get the jar, you need to build the project using maven.
 
@@ -168,7 +168,7 @@ Each `QuerySlice` represents a specific sql statement.
 ### **Step2**: executing through command line
 
 ```bash
-java -cp tpch-java-1.0-SNAPSHOT-jar-with-dependencies.jar ind.xuchuanyin.tpch.cli.CliTool -c sql_exec -f path_to_execute_sql
+java -cp tpch-java-1.0-SNAPSHOT-jar-with-dependencies.jar ind.xuchuanyin.tpch.cli.CliTool -c exec_sql -f path_to_execute_sql
 ```
 
 ### **Step2 alternative**: executing through java code
