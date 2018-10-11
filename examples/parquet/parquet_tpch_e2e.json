@@ -1,28 +1,28 @@
 {
   "dataGen": {
     "preProcessScript": "",
-    "processMetaFilePath": "examples/common/tpch_data_generate.json",
-    "postProcessScript": "examples/common/tpch_data_to_hdfs.sh"
+    "processMetaFilePath": "examples/common/tpch_generate_data.json",
+    "postProcessScript": "examples/common/tpch_copy_data_to_hdfs.sh"
   },
   "sqlExec": [
     {
       "preProcessScript": "",
-      "processMetaFilePath": "examples/parquet/parquet_tpch_table_create.json",
+      "processMetaFilePath": "examples/parquet/parquet_tpch_create_table.json",
       "postProcessScript": ""
     },
     {
       "preProcessScript": "",
-      "processMetaFilePath": "examples/parquet/parquet_tpch_table_csv.json",
+      "processMetaFilePath": "examples/parquet/parquet_tpch_load_csv_table.json",
       "postProcessScript": ""
     },
     {
       "preProcessScript": "",
-      "processMetaFilePath": "examples/parquet/parquet_tpch_table_load.json",
+      "processMetaFilePath": "examples/parquet/parquet_tpch_load_table.json",
       "postProcessScript": ""
     },
     {
       "preProcessScript": "",
-      "processMetaFilePath": "examples/parquet/parquet_tpch_table_query.json",
+      "processMetaFilePath": "examples/parquet/parquet_tpch_query_table.json",
       "postProcessScript": ""
     }
   ]

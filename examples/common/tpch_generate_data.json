@@ -1,0 +1,45 @@
+{
+  "targetDirectory": "/home/xu/tpch_10g",
+  "tableGenModels": [
+    {
+      "tpchTableName": "customer",
+      "scaleupFactor": 10,
+      "filePartCnt": 2
+    },
+    {
+      "tpchTableName": "orders",
+      "scaleupFactor": 10,
+      "filePartCnt": 2
+    },
+    {
+      "tpchTableName": "lineitem",
+      "scaleupFactor": 10,
+      "filePartCnt": 2
+    },
+    {
+      "tpchTableName": "part",
+      "scaleupFactor": 10,
+      "filePartCnt": 2
+    },
+    {
+      "tpchTableName": "partsupp",
+      "scaleupFactor": 10,
+      "filePartCnt": 2
+    },
+    {
+      "tpchTableName": "supplier",
+      "scaleupFactor": 10,
+      "filePartCnt": 2
+    },
+    {
+      "tpchTableName": "nation",
+      "scaleupFactor": 10,
+      "filePartCnt": 2
+    },
+    {
+      "tpchTableName": "region",
+      "scaleupFactor": 10,
+      "filePartCnt": 2
+    }
+  ]
+}
