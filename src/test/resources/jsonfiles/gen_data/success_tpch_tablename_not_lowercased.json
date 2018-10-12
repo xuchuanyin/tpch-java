@@ -3,7 +3,7 @@
   "tableGenModels": [
     {
       "tpchTableName": "NaTion",
-      "scaleupFactor": 1,
+      "scaleupFactor": 0.1,
       "filePartCnt": 2
     }
   ]

@@ -77,7 +77,7 @@
     {
       "id": "carbon-query-id08",
       "sql": "select count(*) from ORDERS",
-      "type": "carbon-use-database",
+      "type": "carbon-count-orders",
       "threads": 5,
       "isConsumeResult": true,
       "isCountInStatistics": true

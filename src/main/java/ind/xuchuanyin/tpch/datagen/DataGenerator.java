@@ -72,7 +72,7 @@ public class DataGenerator implements Procedure {
   private void generateData4Table(TableGenModel tableGenModel) throws IOException {
     String tpchTableName = tableGenModel.getTpchTableName();
     int partCnt = tableGenModel.getFilePartCnt();
-    int scaleupFactor = tableGenModel.getScaleupFactor();
+    double scaleupFactor = tableGenModel.getScaleupFactor();
 
     FileUtils.forceMkdir(
         FileUtils.getFile(dataGenModel.getTargetDirectory() + File.separator + tpchTableName));

@@ -19,7 +19,7 @@
       "isCountInStatistics": false
     },
     {
-      "id": "parquet-query-",
+      "id": "parquet-query-id02",
       "sql": "select count(*) from LINEITEM",
       "type": "parquet-count-lineitem",
       "threads": 5,
@@ -77,7 +77,7 @@
     {
       "id": "parquet-query-id08",
       "sql": "select count(*) from ORDERS",
-      "type": "parquet-use-database",
+      "type": "parquet-count-orders",
       "threads": 5,
       "isConsumeResult": true,
       "isCountInStatistics": true

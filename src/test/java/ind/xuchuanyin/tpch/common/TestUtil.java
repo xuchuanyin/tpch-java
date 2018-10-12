@@ -19,13 +19,13 @@ public class TestUtil {
     TableGenModel tableGenModel1 = TableGenModel.TableGenModelBuilder
         .aTableGenModel()
         .withTpchTableName("customer")
-        .withScaleupFactor(1)
+        .withScaleupFactor(0.1)
         .withFilePartCnt(2)
         .build();
     TableGenModel tableGenModel2 = TableGenModel.TableGenModelBuilder
         .aTableGenModel()
         .withTpchTableName("lineitem")
-        .withScaleupFactor(1)
+        .withScaleupFactor(0.1)
         .withFilePartCnt(3)
         .build();
     List<TableGenModel> tableGenModelList = new ArrayList<>();

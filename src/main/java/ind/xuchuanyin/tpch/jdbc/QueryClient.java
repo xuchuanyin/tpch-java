@@ -78,10 +78,16 @@ public class QueryClient implements Procedure {
     List<Long> end2EndDuration = new ArrayList<>(iteration);
     for (int i = 0; i < iteration; i++) {
       long start = System.currentTimeMillis();
-
       List<QueryResult> cycleResult = query(queryModel.getQuerySlices());
-
       end2EndDuration.add(System.currentTimeMillis() - start);
+
+      cycleResult.stream()
+          .map(r -> String.format("returns %s records for query %s with type %s",
+              r.getQuerySlice().isConsumeResult() ? r.getResultSize() : -1,
+              r.getQuerySlice().getId(),
+              r.getQuerySlice().getType()))
+          .forEach(r -> LOGGER.info(r));
+
       List<QueryResult> results4Stat = cycleResult.stream()
           .filter(r -> r.getQuerySlice().isCountInStatistics())
           .filter(r -> r.getDuration() >= 0)

@@ -3,12 +3,12 @@
   "tableGenModels": [
     {
       "tpchTableName": "nation",
-      "scaleupFactor": 1,
+      "scaleupFactor": 0.1,
       "filePartCnt": 2
     },
     {
       "tpchTableName": "region",
-      "scaleupFactor": 1,
+      "scaleupFactor": 0.1,
       "filePartCnt": 3
     }
   ]

@@ -12,7 +12,7 @@ import org.apache.log4j.Logger;
 public class TableGenModel implements Normalizer {
   private static final Logger LOGGER = Logger.getLogger(TableGenModel.class);
   private String tpchTableName;
-  private int scaleupFactor;
+  private double scaleupFactor;
   private int filePartCnt;
 
   public String getTpchTableName() {
@@ -23,11 +23,11 @@ public class TableGenModel implements Normalizer {
     this.tpchTableName = tpchTableName;
   }
 
-  public int getScaleupFactor() {
+  public double getScaleupFactor() {
     return scaleupFactor;
   }
 
-  public void setScaleupFactor(int scaleupFactor) {
+  public void setScaleupFactor(double scaleupFactor) {
     this.scaleupFactor = scaleupFactor;
   }
 
@@ -75,7 +75,7 @@ public class TableGenModel implements Normalizer {
 
   public static final class TableGenModelBuilder {
     private String tpchTableName;
-    private int scaleupFactor;
+    private double scaleupFactor;
     private int filePartCnt;
 
     private TableGenModelBuilder() {
@@ -90,7 +90,7 @@ public class TableGenModel implements Normalizer {
       return this;
     }
 
-    public TableGenModelBuilder withScaleupFactor(int scaleupFactor) {
+    public TableGenModelBuilder withScaleupFactor(double scaleupFactor) {
       this.scaleupFactor = scaleupFactor;
       return this;
     }

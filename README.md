@@ -56,20 +56,20 @@ This file represents a `DataGenModel`. The content looks like below:
 
 #### Parameters for `DataGenModel`
 
-| Name | Default | Required | Note |
-| --- | --- | --- | --- |
-| targetDirectory | - | Y | Where will the generated data be written |
-| tableGenModels | - | Y | tpch tables to be generated |
+| Name | DataType | Default | Required | Note |
+| --- | --- | --- | --- | --- |
+| targetDirectory | String | - | Y | Where will the generated data be written |
+| tableGenModels | DataGenModel | - | Y | tpch tables to be generated |
 
 #### Parameters for `TableGenModel`
 
 Each `TableGenModel` represents a TPCH table to be generated.
 
-| Name | Default | Required | Note |
-| --- | --- | --- | --- |
-| tpchTableName | - | Y | Name of tpch table to be generated |
-| scaleupFactor | 1 | N | It measures the size of the input data in GB |
-| filePartCnt | 1 | N | The number of data files will be split into |
+| Name | DataType | Default | Required | Note |
+| --- | --- | --- | --- | --- |
+| tpchTableName | String | - | Y | Name of tpch table to be generated |
+| scaleupFactor | double | 1 | N | It measures the size of the input data in GB |
+| filePartCnt | int | 1 | N | The number of data files will be split into |
 
 ### **Step2**: executing through command line
 
@@ -138,32 +138,32 @@ This file represents a `QueryModel`. The content looks like below:
 
 #### Parameters for `QueryModel`
 
-| Name | Default | Required | Note |
-| --- | --- | --- | --- |
-| jdbcUrl | - | Y | Url for JDBC connection |
-| jdbcUser| - | N | User for JDBC connection |
-| jdbcPwd | - | N | Password for JDBC connection |
-| jdbcDriver | - | Y | Driver class for JDBC connection |
-| jdbcPoolSize | 20 | N | Pool size for connection |
-| execIteration | 1 | N | Iteration for executing the queries |
-| execInterval | 2 | N | Time to wait in seconds before next iteration |
-| execConcurrentSize | 1 | N | Pool size for concurrent querying |
-| shuffleExecute | false | N | Whether to shuffle the sql statements before execution |
-| reportStore | - | N | Where to store the statistic result of the query model. If this parameter is not configured, we will not store it. If it is configured, we will write the statistics to a file in both json and table format. Later user can merge different reports |
-| querySlices | - | Y | Each `QuerySlice` represents a block of sql statments that to be executed |
+| Name | DataType | Default | Required | Note |
+| --- | --- | --- | --- | --- |
+| jdbcUrl | String | - | Y | Url for JDBC connection |
+| jdbcUser | String | - | N | User for JDBC connection |
+| jdbcPwd | String | - | N | Password for JDBC connection |
+| jdbcDriver | String  | - | Y | Driver class for JDBC connection |
+| jdbcPoolSize | int | 20 | N | Pool size for connection |
+| execIteration | int | 1 | N | Iteration for executing the queries |
+| execInterval | int  | 2 | N | Time to wait in seconds before next iteration |
+| execConcurrentSize | int  | 1 | N | Pool size for concurrent querying |
+| shuffleExecute | boolean  | false | N | Whether to shuffle the sql statements before execution |
+| reportStore | String  | - | N | Where to store the statistic result of the query model. If this parameter is not configured, we will not store it. If it is configured, we will write the statistics to a file in both json and table format. Later user can merge different reports |
+| querySlices | List QuerySlice | - | Y | Each `QuerySlice` represents a block of sql statments that to be executed |
 
 #### Parameters for `QuerySlice`
 
 Each `QuerySlice` represents a specific sql statement.
 
-| Name | Default | Required | Note |
-| --- | --- | --- | --- |
-| id | q${nanotime} | N | To distinguish a SQL, especially when we shuffle a batch of sqls, we use this id to represent each sql |
-| sql | - | Y | SQL to be executed |
-| type | unclassified | N | Type of SQL which will be used in statistics. For each type, a statistics will be performed |
-| threads | 1 | N | SQL will be executed `threads` times in one iteration |
-| isConsumedResult | true | N | For each sql execution, a ResultSet will be returned. This parameter controls whether we will iterate the ResultSet |
-| isCountInStatistics | true | N | Whether to include this SQL in the statistics |
+| Name | DataType | Default | Required | Note |
+| --- | --- | --- | --- | --- |
+| id | String | q${nanotime} | N | To distinguish a SQL, especially when we shuffle a batch of sqls, we use this id to represent each sql |
+| sql | String | - | Y | SQL to be executed |
+| type | String | unclassified | N | Type of SQL which will be used in statistics. For each type, a statistics will be performed |
+| threads | int | 1 | N | SQL will be executed `threads` times in one iteration |
+| isConsumedResult | boolean | true | N | For each sql execution, a ResultSet will be returned. This parameter controls whether we will iterate the ResultSet |
+| isCountInStatistics | boolean | true | N | Whether to include this SQL in the statistics |
 
 ### **Step2**: executing through command line
 
@@ -285,26 +285,26 @@ This file represents a `TpchModel`. The content looks like below:
 ```
 #### Parameters for `TpchModel`
 
-| Name | Default | Required | Note |
-| --- | --- | --- | --- |
-| dataGen | - | N | It describes the tpch data to be generated |
-| sqlExec | - | N | It describes the sqls to be executed |
+| Name | DataType | Default | Required | Note |
+| --- | --- | --- | --- | --- |
+| dataGen | ModelWrapper | - | N | It describes the tpch data to be generated |
+| sqlExec | List ModelWrapprt | - | N | It describes the sqls to be executed |
 
 #### Parameters for `dataGen`
 
-| Name | Default | Required | Note |
-| --- | --- | --- | --- |
-| preProcessScript | - | N | Path to the script to be executed before generating tpch data |
-| processMetaFilePath | - | Y | Path to the file that describes the `DataGenModel` |
-| posteProcessScript | - | N | Path to the script to be executed after processing |
+| Name | DataType | Default | Required | Note |
+| --- | --- | --- | --- | --- |
+| preProcessScript | String | - | N | Path to the script to be executed before generating tpch data |
+| processMetaFilePath | String | - | Y | Path to the file that describes the `DataGenModel` |
+| posteProcessScript | String | - | N | Path to the script to be executed after processing |
 
 #### Parameters for `sqlExec`
 
-| Name | Default | Required | Note |
-| --- | --- | --- | --- |
-| preProcessScript | - | N | Path to the script file to be executed before processing |
-| processMetaFilePath | - | Y | Path to the file that describes the `QueryModel` |
-| posteProcessScript | - | N | Path to the script file to be executed after processing |
+| Name | DataType | Default | Required | Note |
+| --- | --- | --- | --- | --- |
+| preProcessScript | String | - | N | Path to the script file to be executed before processing |
+| processMetaFilePath | String | - | Y | Path to the file that describes the `QueryModel` |
+| posteProcessScript | String | - | N | Path to the script file to be executed after processing |
 
 ### **Step2**: executing through command line
 

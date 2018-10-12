@@ -3,12 +3,12 @@
   "tableGenModels": [
     {
       "tpchTableName": "unsupported1",
-      "scaleupFactor": 1,
+      "scaleupFactor": 0.1,
       "filePartCnt": 2
     },
     {
       "tpchTableName": "unsupported2",
-      "scaleupFactor": 1,
+      "scaleupFactor": 0.1,
       "filePartCnt": 2
     }
   ]
