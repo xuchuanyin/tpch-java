@@ -130,9 +130,11 @@ public final class TableFormatter {
       }
       String valueLine = StringUtils.join(value4PerCol, VERTICAL);
       sb.append(VERTICAL).append(valueLine).append(VERTICAL).append(System.lineSeparator());
-      sb.append(PLUS).append(sep4WholeLine).append(PLUS).append(System.lineSeparator());
+      // to make it more compact, we skip the separate line between each line
+      if (i == 0 || i == maxRowNumber - 1) {
+        sb.append(PLUS).append(sep4WholeLine).append(PLUS).append(System.lineSeparator());
+      }
     }
-
     return sb.toString();
   }
 
