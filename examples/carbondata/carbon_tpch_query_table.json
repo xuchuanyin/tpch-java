@@ -17,7 +17,7 @@
       "type": "carbon-count-lineitem",
       "threads": 5,
       "isConsumeResult": true,
-      "isCountInStatistics": true
+      "isCountInStatistics": false
     },
     {
       "id": "carbon-query-id02",
@@ -25,7 +25,7 @@
       "type": "carbon-count-supplier",
       "threads": 5,
       "isConsumeResult": true,
-      "isCountInStatistics": true
+      "isCountInStatistics": false
     },
     {
       "id": "carbon-query-id03",
@@ -33,7 +33,7 @@
       "type": "carbon-count-partsupp",
       "threads": 5,
       "isConsumeResult": true,
-      "isCountInStatistics": true
+      "isCountInStatistics": false
     },
     {
       "id": "carbon-query-id04",
@@ -41,7 +41,7 @@
       "type": "carbon-count-customer",
       "threads": 5,
       "isConsumeResult": true,
-      "isCountInStatistics": true
+      "isCountInStatistics": false
     },
     {
       "id": "carbon-query-id05",
@@ -49,7 +49,7 @@
       "type": "carbon-count-nation",
       "threads": 5,
       "isConsumeResult": true,
-      "isCountInStatistics": true
+      "isCountInStatistics": false
     },
     {
       "id": "carbon-query-id06",
@@ -57,7 +57,7 @@
       "type": "carbon-count-region",
       "threads": 5,
       "isConsumeResult": true,
-      "isCountInStatistics": true
+      "isCountInStatistics": false
     },
     {
       "id": "carbon-query-id07",
@@ -65,7 +65,7 @@
       "type": "carbon-count-part",
       "threads": 5,
       "isConsumeResult": true,
-      "isCountInStatistics": true
+      "isCountInStatistics": false
     },
     {
       "id": "carbon-query-id08",
@@ -73,7 +73,7 @@
       "type": "carbon-count-orders",
       "threads": 5,
       "isConsumeResult": true,
-      "isCountInStatistics": true
+      "isCountInStatistics": false
     },
     {
       "id": "carbon-query-q01",
