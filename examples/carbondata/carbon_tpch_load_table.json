@@ -15,6 +15,7 @@
       "sql": "use tpchcarbon_base",
       "type": "carbon-load-prepare",
       "threads": 1,
+      "isSelectQuery": false,
       "isConsumeResult": false,
       "isCountInStatistics": false
     },
@@ -23,6 +24,7 @@
       "sql": "load data inpath 'hdfs://carbon1:9000/tpch-data/supplier' into table SUPPLIER options ('header'='false','delimiter'='|')",
       "type": "carbon-load-supplier",
       "threads": 1,
+      "isSelectQuery": false,
       "isConsumeResult": false,
       "isCountInStatistics": true
     },
@@ -31,6 +33,7 @@
       "sql": "load data inpath 'hdfs://carbon1:9000/tpch-data/partsupp' into table PARTSUPP options ('header'='false','delimiter'='|')",
       "type": "carbon-load-partsupp",
       "threads": 1,
+      "isSelectQuery": false,
       "isConsumeResult": false,
       "isCountInStatistics": true
     },
@@ -39,6 +42,7 @@
       "sql": "load data inpath 'hdfs://carbon1:9000/tpch-data/customer' into table CUSTOMER options ('header'='false','delimiter'='|')",
       "type": "carbon-load-customer",
       "threads": 1,
+      "isSelectQuery": false,
       "isConsumeResult": false,
       "isCountInStatistics": true
     },
@@ -47,6 +51,7 @@
       "sql": "load data inpath 'hdfs://carbon1:9000/tpch-data/nation' into table NATION options ('header'='false','delimiter'='|')",
       "type": "carbon-load-nation",
       "threads": 1,
+      "isSelectQuery": false,
       "isConsumeResult": false,
       "isCountInStatistics": true
     },
@@ -55,6 +60,7 @@
       "sql": "load data inpath 'hdfs://carbon1:9000/tpch-data/region' into table REGION options ('header'='false','delimiter'='|')",
       "type": "carbon-load-region",
       "threads": 1,
+      "isSelectQuery": false,
       "isConsumeResult": false,
       "isCountInStatistics": true
     },
@@ -63,6 +69,7 @@
       "sql": "load data inpath 'hdfs://carbon1:9000/tpch-data/part' into table PART options ('header'='false','delimiter'='|')",
       "type": "carbon-load-part",
       "threads": 1,
+      "isSelectQuery": false,
       "isConsumeResult": false,
       "isCountInStatistics": true
     },
@@ -71,6 +78,7 @@
       "sql": "load data inpath 'hdfs://carbon1:9000/tpch-data/lineitem' into table LINEITEM options ('header'='false','delimiter'='|')",
       "type": "carbon-load-lineitem",
       "threads": 1,
+      "isSelectQuery": false,
       "isConsumeResult": false,
       "isCountInStatistics": true
     },
@@ -79,6 +87,7 @@
       "sql": "load data inpath 'hdfs://carbon1:9000/tpch-data/orders' into table ORDERS options ('header'='false','delimiter'='|')",
       "type": "carbon-load-orders",
       "threads": 1,
+      "isSelectQuery": false,
       "isConsumeResult": false,
       "isCountInStatistics": true
     }

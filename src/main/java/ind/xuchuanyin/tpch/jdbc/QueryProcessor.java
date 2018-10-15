@@ -32,15 +32,21 @@ public class QueryProcessor {
     try {
       statement = conn.prepareStatement(querySlice.getSql());
 
-      long startWatch = System.currentTimeMillis();
-      rs = statement.executeQuery();
       int cnt = 0;
+      long startWatch = System.currentTimeMillis();
+      if (querySlice.isSelectQuery()) {
+        rs = statement.executeQuery();
 
-      if (querySlice.isConsumeResult()) {
-        while (rs.next()) {
-          cnt++;
+        if (querySlice.isConsumeResult()) {
+          while (rs.next()) {
+            cnt++;
+          }
         }
+      } else {
+        statement.execute();
+        cnt = -1;
       }
+
       long stopWatch = System.currentTimeMillis();
 
       QueryResult queryResult = QueryResult.QueryResultBuilder.aQueryResult()

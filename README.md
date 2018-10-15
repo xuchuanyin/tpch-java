@@ -114,6 +114,7 @@ This file represents a `QueryModel`. The content looks like below:
       "sql": "show tables",
       "type": "type1",
       "threads": 1,
+      "isSelectQuery": false,
       "isConsumeResult": true,
       "isCountInStatistics": true
     },
@@ -122,6 +123,7 @@ This file represents a `QueryModel`. The content looks like below:
       "sql": "show databases",
       "type": "type2",
       "threads": 5,
+      "isSelectQuery": false,
       "isConsumeResult": true,
       "isCountInStatistics": true
     },
@@ -130,6 +132,7 @@ This file represents a `QueryModel`. The content looks like below:
       "sql": "show tables;show databases",
       "type": "type3",
       "threads": 2,
+      "isSelectQuery": false,
       "isConsumeResult": true,
       "isCountInStatistics": false
     }
@@ -164,6 +167,7 @@ Each `QuerySlice` represents a specific sql statement.
 | sql | String | - | Y | SQL to be executed |
 | type | String | unclassified | N | Type of SQL which will be used in statistics. For each type, a statistics will be performed |
 | threads | int | 1 | N | SQL will be executed `threads` times in one iteration |
+| isSelectQuery | boolean | true | whether this sql is select query. We add this parameter because that for some database, non-select query cannot execute through execteQuery method |
 | isConsumedResult | boolean | true | N | For each sql execution, a ResultSet will be returned. This parameter controls whether we will iterate the ResultSet |
 | isCountInStatistics | boolean | true | N | Whether to include this SQL in the statistics |
 

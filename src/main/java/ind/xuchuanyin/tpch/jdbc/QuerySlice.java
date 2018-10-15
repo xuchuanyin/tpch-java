@@ -5,18 +5,21 @@ public class QuerySlice {
   private String sql;
   private String type = "unclassified";
   private int threads = 1;
+  private boolean isSelectQuery = true;
   private boolean isConsumeResult = true;
   private boolean isCountInStatistics = true;
 
   public QuerySlice() {
   }
 
-  @Override public String toString() {
+  @Override
+  public String toString() {
     final StringBuffer sb = new StringBuffer("QuerySlice{");
     sb.append("id='").append(id).append('\'');
     sb.append(", sql='").append(sql).append('\'');
     sb.append(", type='").append(type).append('\'');
     sb.append(", threads=").append(threads);
+    sb.append(", isSelectQuery=").append(isSelectQuery);
     sb.append(", isConsumeResult=").append(isConsumeResult);
     sb.append(", isCountInStatistics=").append(isCountInStatistics);
     sb.append('}');
@@ -55,6 +58,14 @@ public class QuerySlice {
     this.threads = threads;
   }
 
+  public boolean isSelectQuery() {
+    return isSelectQuery;
+  }
+
+  public void setSelectQuery(boolean selectQuery) {
+    isSelectQuery = selectQuery;
+  }
+
   public boolean isConsumeResult() {
     return isConsumeResult;
   }
@@ -76,6 +87,7 @@ public class QuerySlice {
     private String sql;
     private String type = "unclassfied";
     private int threads = 1;
+    private boolean isSelectQuery = true;
     private boolean isConsumeResult = true;
     private boolean isCountInStatistics = true;
 
@@ -106,6 +118,11 @@ public class QuerySlice {
       return this;
     }
 
+    public QuerySliceBuilder withIsSelectQuery(boolean isSelectQuery) {
+      this.isSelectQuery = isSelectQuery;
+      return this;
+    }
+
     public QuerySliceBuilder withIsConsumeResult(boolean isConsumeResult) {
       this.isConsumeResult = isConsumeResult;
       return this;
@@ -122,6 +139,7 @@ public class QuerySlice {
       querySlice.setSql(sql);
       querySlice.setType(type);
       querySlice.setThreads(threads);
+      querySlice.isSelectQuery = this.isSelectQuery;
       querySlice.isConsumeResult = this.isConsumeResult;
       querySlice.isCountInStatistics = this.isCountInStatistics;
       return querySlice;
