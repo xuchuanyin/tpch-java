@@ -22,7 +22,8 @@ public class ConnectionMgr {
     return INSTANCE;
   }
 
-  public synchronized void init(String driverName, String url, String user, String pwd, int size) {
+  public synchronized void init(String driverName, String url, String user, String pwd, int size,
+      String connInitQuery) {
     if (!connections.isEmpty()) {
       LOGGER.warn("Connection pool has already been inited before, will ignore it");
       return;
@@ -35,11 +36,11 @@ public class ConnectionMgr {
     }
 
     for (int i = 0; i < size; i++) {
-      connections.add(newConnection(url, user, pwd));
+      connections.add(newConnection(url, user, pwd, connInitQuery));
     }
   }
 
-  private Connection newConnection(String url, String user, String pwd) {
+  private Connection newConnection(String url, String user, String pwd, String connInitQuery) {
     LOGGER.info("Create new jdbc connection, timestamp is " + System.currentTimeMillis());
     Connection conn = null;
     try {
@@ -48,10 +49,15 @@ public class ConnectionMgr {
       } else {
         conn = DriverManager.getConnection(url, user, pwd);
       }
+
+      if (StringUtils.isNotBlank(connInitQuery)) {
+        conn.prepareStatement(connInitQuery).execute();
+      }
     } catch (SQLException e) {
       LOGGER.error("Failed to create connection, time stamp is " + System.currentTimeMillis(), e);
     }
     LOGGER.info("Create connection " + conn);
+
     return conn;
   }
 

@@ -9,15 +9,8 @@
   "execConcurrentSize": 1,
   "shuffleExecute": false,
   "reportStore": "report/carbon_query",
+  "connInitQuery": "use tpchcarbon_base",
   "querySlices": [
-    {
-      "id": "carbon-query-id00",
-      "sql": "use tpchcarbon_base",
-      "type": "carbon-use-database",
-      "threads": 1,
-      "isConsumeResult": false,
-      "isCountInStatistics": false
-    },
     {
       "id": "carbon-query-",
       "sql": "select count(*) from LINEITEM",

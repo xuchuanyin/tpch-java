@@ -107,6 +107,7 @@ This file represents a `QueryModel`. The content looks like below:
   "execConcurrentSize": 2,
   "shuffleExecute": true,
   "reportStore": "sql_report1",
+  "connInitQuery": "use default",
   "querySlices": [
     {
       "id": "id1",
@@ -150,6 +151,7 @@ This file represents a `QueryModel`. The content looks like below:
 | execConcurrentSize | int  | 1 | N | Pool size for concurrent querying |
 | shuffleExecute | boolean  | false | N | Whether to shuffle the sql statements before execution |
 | reportStore | String  | - | N | Where to store the statistic result of the query model. If this parameter is not configured, we will not store it. If it is configured, we will write the statistics to a file in both json and table format. Later user can merge different reports |
+| connInitQuery | String | - | N | While the connection pool is initialized, each connection will execute this query statement. This is usually for setting some environment variables |
 | querySlices | List QuerySlice | - | Y | Each `QuerySlice` represents a block of sql statments that to be executed |
 
 #### Parameters for `QuerySlice`

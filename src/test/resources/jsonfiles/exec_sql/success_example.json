@@ -9,6 +9,7 @@
   "execConcurrentSize": 2,
   "shuffleExecute": true,
   "reportStore": "test_report_out",
+  "connInitQuery": "use default",
   "querySlices": [
     {
       "id": "id1",

@@ -9,15 +9,8 @@
   "execConcurrentSize": 1,
   "shuffleExecute": false,
   "reportStore": "report/parquet_query",
+  "connInitQuery": "use tpchparquet_partition",
   "querySlices": [
-    {
-      "id": "parquet-query-id00",
-      "sql": "use tpchparquet_partition",
-      "type": "parquet-use-database",
-      "threads": 1,
-      "isConsumeResult": false,
-      "isCountInStatistics": false
-    },
     {
       "id": "parquet-query-id02",
       "sql": "select count(*) from LINEITEM",

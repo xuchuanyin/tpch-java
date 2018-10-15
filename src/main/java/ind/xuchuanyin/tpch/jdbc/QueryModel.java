@@ -17,7 +17,7 @@ public class QueryModel {
   private int execConcurrentSize = 1;
   private boolean shuffleExecute = false;
   private String reportStore;
-
+  private String connInitQuery;
   private List<QuerySlice> querySlices;
 
   public QueryModel() {
@@ -36,6 +36,7 @@ public class QueryModel {
     sb.append(", execConcurrentSize=").append(execConcurrentSize);
     sb.append(", shuffleExecute=").append(shuffleExecute);
     sb.append(", reportStore='").append(reportStore).append('\'');
+    sb.append(", connInitQuery='").append(connInitQuery).append('\'');
     sb.append(", querySlices=").append(querySlices);
     sb.append('}');
     return sb.toString();
@@ -121,6 +122,14 @@ public class QueryModel {
     this.reportStore = reportStore;
   }
 
+  public String getConnInitQuery() {
+    return connInitQuery;
+  }
+
+  public void setConnInitQuery(String connInitQuery) {
+    this.connInitQuery = connInitQuery;
+  }
+
   public List<QuerySlice> getQuerySlices() {
     return querySlices;
   }
@@ -141,6 +150,7 @@ public class QueryModel {
     private int execConcurrentSize = 1;
     private boolean shuffleExecute = false;
     private String reportStore;
+    private String connInitQuery;
     private List<QuerySlice> querySlices;
 
     private QueryModelBuilder() {
@@ -200,6 +210,11 @@ public class QueryModel {
       return this;
     }
 
+    public QueryModelBuilder withConnInitQuery(String connInitQuery) {
+      this.connInitQuery = connInitQuery;
+      return this;
+    }
+
     public QueryModelBuilder withQuerySlices(List<QuerySlice> querySlices) {
       this.querySlices = querySlices;
       return this;
@@ -217,6 +232,7 @@ public class QueryModel {
       queryModel.setExecConcurrentSize(execConcurrentSize);
       queryModel.setShuffleExecute(shuffleExecute);
       queryModel.setReportStore(reportStore);
+      queryModel.setConnInitQuery(connInitQuery);
       queryModel.setQuerySlices(querySlices);
       return queryModel;
     }

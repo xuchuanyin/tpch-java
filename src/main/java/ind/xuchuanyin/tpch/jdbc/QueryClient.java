@@ -69,7 +69,7 @@ public class QueryClient implements Procedure {
 
     ConnectionMgr.getInstance()
         .init(queryModel.getJdbcDriver(), queryModel.getJdbcUrl(), queryModel.getJdbcUser(),
-            queryModel.getJdbcPwd(), queryModel.getJdbcPoolSize());
+            queryModel.getJdbcPwd(), queryModel.getJdbcPoolSize(), queryModel.getConnInitQuery());
     queryProcessor = new QueryProcessor(queryModel.getExecConcurrentSize());
 
     int iteration = queryModel.getExecIteration();
