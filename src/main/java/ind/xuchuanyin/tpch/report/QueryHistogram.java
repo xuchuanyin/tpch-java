@@ -12,11 +12,11 @@ public final class QueryHistogram<T> {
   private static final Logger LOGGER = Logger.getLogger(QueryHistogram.class);
   private static final List<String> HISTOGRAM_TITLE = new ArrayList<String>() {{
     add("query");
+    add("avg");
     add("size");
     add("total");
     add("min");
     add("max");
-    add("avg");
     add("25%");
     add("50%");
     add("75%");
@@ -24,11 +24,11 @@ public final class QueryHistogram<T> {
     add("95%");
   }};
   private String query;
+  private double avg;
   private int size;
   private T total;
   private T min;
   private T max;
-  private double avg;
   private T quarter;
   private T half;
   private T three_quarters;
@@ -38,11 +38,11 @@ public final class QueryHistogram<T> {
   @Override public String toString() {
     final StringBuffer sb = new StringBuffer("QueryHistogram{");
     sb.append("query='").append(query).append("'");
-    sb.append("size=").append(size);
+    sb.append(", avg=").append(avg);
+    sb.append(", size=").append(size);
     sb.append(", total=").append(total);
     sb.append(", min=").append(min);
     sb.append(", max=").append(max);
-    sb.append(", avg=").append(avg);
     sb.append(", 25%=").append(quarter);
     sb.append(", 50%=").append(half);
     sb.append(", 75%=").append(three_quarters);
@@ -63,11 +63,11 @@ public final class QueryHistogram<T> {
   public List<String> getRawValue() {
     List<String> value = new ArrayList<>(10);
     value.add(String.valueOf(this.query));
+    value.add(String.valueOf(this.avg));
     value.add(String.valueOf(this.size));
     value.add(String.valueOf(this.total));
     value.add(String.valueOf(this.min));
     value.add(String.valueOf(this.max));
-    value.add(String.valueOf(this.avg));
     value.add(String.valueOf(this.quarter));
     value.add(String.valueOf(this.half));
     value.add(String.valueOf(this.three_quarters));
@@ -79,11 +79,11 @@ public final class QueryHistogram<T> {
 
   public static final class QueryHistogramBuilder<T> {
     private String query;
+    private double avg;
     private int size;
     private T total;
     private T min;
     private T max;
-    private double avg;
     private T quarter;
     private T half;
     private T three_quarters;
