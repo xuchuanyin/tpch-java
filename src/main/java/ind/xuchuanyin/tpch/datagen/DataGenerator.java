@@ -4,6 +4,11 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import com.google.gson.Gson;
 import ind.xuchuanyin.tpch.Procedure;
@@ -14,6 +19,8 @@ public class DataGenerator implements Procedure {
   private static final Logger LOGGER = Logger.getLogger(DataGenerator.class);
   private String inputFilePath;
   private DataGenModel dataGenModel;
+  private ExecutorService executorService;
+  private List<Future<?>> executorTasks;
 
   public DataGenerator() {
   }
@@ -28,6 +35,9 @@ public class DataGenerator implements Procedure {
     loadDataGenModel();
 
     dataGenModel.normalize();
+
+    executorService = Executors.newCachedThreadPool();
+    executorTasks = new ArrayList<>();
 
     generate();
   }
@@ -66,6 +76,13 @@ public class DataGenerator implements Procedure {
         }
       }
     }
+    for (int i = 0; i < executorTasks.size(); i++) {
+      try {
+        executorTasks.get(i).get();
+      } catch (Exception e) {
+        LOGGER.error("Failed to execute task", e);
+      }
+    }
     LOGGER.info("Succeed to generate data for " + dataGenModel.getTableGenModels().size() + " tables");
   }
 
@@ -78,9 +95,10 @@ public class DataGenerator implements Procedure {
         FileUtils.getFile(dataGenModel.getTargetDirectory() + File.separator + tpchTableName));
     LOGGER.info("Start to generate data for table " + tpchTableName);
     for (int part = 1; part <= partCnt; part++) {
-      AirliftTpchUtil.getInstance().generateData4PerPart(
-          dataGenModel.getTargetDirectory(), tpchTableName, scaleupFactor, part, partCnt);
+      executorTasks.add(executorService.submit(new GeneratorWorker(
+          dataGenModel.getTargetDirectory(), tpchTableName, scaleupFactor, part, partCnt)));
     }
+
     LOGGER.info("Succeed to generate data for table " + tpchTableName);
   }
 
@@ -95,6 +113,35 @@ public class DataGenerator implements Procedure {
 
   @Override
   public void close() {
+    if (null != executorService) {
+      executorService.shutdown();
+    }
+  }
 
+  private final class GeneratorWorker implements Runnable {
+    private String targetDirectory;
+    private String tpchTableName;
+    private double scaleupFactor;
+    private int part;
+    private int partCnt;
+
+    public GeneratorWorker(String targetDirectory, String tpchTableName, double scaleupFactor,
+        int part, int partCnt) {
+      this.targetDirectory = targetDirectory;
+      this.tpchTableName = tpchTableName;
+      this.scaleupFactor = scaleupFactor;
+      this.part = part;
+      this.partCnt = partCnt;
+    }
+
+    @Override
+    public void run() {
+      try {
+        AirliftTpchUtil.getInstance()
+            .generateData4PerPart(targetDirectory, tpchTableName, scaleupFactor, part, partCnt);
+      } catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
   }
 }
