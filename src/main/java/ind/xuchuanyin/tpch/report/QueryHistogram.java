@@ -1,10 +1,10 @@
 package ind.xuchuanyin.tpch.report;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import ind.xuchuanyin.tpch.jdbc.QueryModel;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.log4j.Logger;
 
@@ -191,7 +191,8 @@ public final class QueryHistogram<T> {
     //max
     long max = list.get(size - 1);
     //avg
-    double avg = total / size;
+    double avg =
+        new BigDecimal(total * 0.1 / size * 10).setScale(1, BigDecimal.ROUND_HALF_UP).doubleValue();
     //25%
     long quarter = list.get(size / 4);
     //50%
